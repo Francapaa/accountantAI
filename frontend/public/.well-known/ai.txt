@@ -1,0 +1,12 @@
+# AccountantAI
+
+Entity: AccountantAI — asistente de IA para estudios contables de Argentina.
+Responde consultas tributarias respaldadas en la normativa oficial de ARCA/AFIP, con cita a la fuente y una carpeta de historial por cliente.
+
+- Home: https://accountantai.com/
+- Blog: https://accountantai.com/blog
+- Sitemap: https://accountantai.com/sitemap.xml
+- llms.txt: https://accountantai.com/llms.txt
+- llms-full.txt: https://accountantai.com/llms-full.txt
+
+Policy: permitimos el acceso de agentes de IA al contenido público para indexación y citas. Las rutas autenticadas (auth, home/dashboard y futuras áreas de clientes) están excluidas por robots.txt.

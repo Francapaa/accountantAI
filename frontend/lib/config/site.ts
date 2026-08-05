@@ -31,5 +31,5 @@ export const siteConfig: SiteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://accountantai.com",
   locale: "es_AR",
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "contacto@accountantai.com",
-  ogImage: "/opengraph-image.png",
+  ogImage: "/opengraph-image",
 };

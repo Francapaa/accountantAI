@@ -41,7 +41,8 @@ For each active source_url:
      continue                     # NO op
   else:
      download full content
-     re-parse → re-clean → re-chunk
+     re-upload the raw file to the `normativa` bucket (overwrite) → storage_path
+     re-parse → re-clean → re-chunk (from the stored object)
      delete existing chunks of the document
      re-embed each chunk
      upsert chunks + update document metadata (content_hash, last_modified, crawled_at)
@@ -50,6 +51,9 @@ For each active source_url:
      continue
 Write run report: processed, skipped, changed, embedded, failed, tombstoned
 ```
+
+On change, the raw object in the private Storage bucket is overwritten so `documents.storage_path`
+always points to the current version, and chunks are rebuilt from it.
 
 ## Concurrency & Idempotency
 
@@ -91,3 +95,4 @@ recorded with reason and do not stop the rest.
 | Date | Change |
 |---|---|
 | 2026-08-04 | Nightly cron sync spec created with hash-based incremental updates. |
+| 2026-08-05 | On change, raw files are re-uploaded to the private `normativa` Storage bucket (overwriting) and chunks are rebuilt from the stored object. |

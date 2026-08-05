@@ -70,6 +70,7 @@ Citations shape: `[{ document_id, title, document_type, source_url, quoted_excer
 |---|---|---|
 | id | uuid pk | |
 | source_url | text unique not null | upsert key |
+| storage_path | text | object in the `normativa` Storage bucket (raw PDF/HTML) |
 | title | text not null | |
 | document_type | enum | `FAQ, Resolución, Manual, Ley, Instructivo` |
 | publication_date | date | |
@@ -158,6 +159,13 @@ create policy document_chunks_read on document_chunks
 > Insert into `documents`/`document_chunks` is done by the **backend service role** (ingestion),
 > not by end users.
 
+## Storage (raw files)
+
+A single **private** Supabase Storage bucket `normativa` holds every raw source (PDF/HTML)
+downloaded by the scraper. Objects are only reachable by the **backend service role** (ingestion
+and chunking). Each document in `documents` references its raw file via `storage_path`. The bucket
+is created in migration `0010_storage.sql` together with the `storage_path` column.
+
 ## Retrieval Query
 
 ```sql
@@ -206,3 +214,4 @@ chunk_index` uniqueness prevents duplicates.
 |---|---|
 | 2026-08-04 | Full schema + indexes + RLS spec created. |
 | 2026-08-05 | Embedding dimension changed to 1536 (`output_dimensionality=1536`) because pgvector indexes are limited to 2000 dimensions. Migrations validated against Postgres + pgvector. |
+| 2026-08-05 | Added `documents.storage_path` and the private `normativa` Storage bucket for raw PDF/HTML sources. |

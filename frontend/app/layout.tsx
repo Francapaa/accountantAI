@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { siteConfig } from "@/lib/config/site";
+import { Analytics } from "@/lib/components/analytics";
+import { WebVitals } from "@/lib/components/web-vitals";
 import "./globals.css";
 
 const inter = Inter({
@@ -17,6 +19,10 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
   subsets: ["latin"],
 });
+
+export const viewport: Viewport = {
+  themeColor: "#2563eb",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -67,6 +73,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
+        {process.env.NEXT_PUBLIC_SUPABASE_URL ? (
+          <link
+            rel="preconnect"
+            href={process.env.NEXT_PUBLIC_SUPABASE_URL}
+            crossOrigin="anonymous"
+          />
+        ) : null}
+        <link rel="apple-touch-icon" href="/icon.svg" />
+        <Analytics />
+        <WebVitals />
         {children}
       </body>
     </html>

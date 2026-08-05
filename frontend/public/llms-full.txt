@@ -1,0 +1,40 @@
+# AccountantAI
+
+> AccountantAI es un asistente de inteligencia artificial para estudios contables de Argentina. Responde consultas tributarias respaldadas en la normativa oficial de ARCA/AFIP, con la cita al documento usado y una carpeta de historial por cliente. Idioma: español (Argentina).
+
+## Qué ofrece la empresa
+
+AccountantAI es una herramienta pensada para estudios contables y contadores individuales en Argentina. A diferencia de un chatbot de propósito general, sus respuestas se generan a partir de la normativa oficial indexada (leyes, resoluciones generales, manuales e instructivos de ARCA/AFIP), y muestran la fuente de la que salió cada afirmación.
+
+Beneficios principales:
+
+- Respuestas en segundos a las consultas repetitivas de los clientes.
+- Cada respuesta incluye la cita al documento normativo y un enlace verificable.
+- Una carpeta por cliente con su contexto (régimen, provincia, rubro) e historial de consultas.
+- La normativa se indexa y actualiza automáticamente.
+- Acceso protegido por autenticación y permisos a nivel de fila: cada contador ve solo sus propios clientes.
+
+AccountantAI no reemplaza al contador: estructura la respuesta y su base legal para que el profesional verifique y decida. La decisión final siempre es humana.
+
+## Preguntas frecuentes
+
+### ¿Qué es AccountantAI?
+Un asistente de inteligencia artificial para estudios contables de Argentina que responde consultas tributarias con respaldo en la normativa oficial de ARCA/AFIP, mostrando siempre la cita al documento usado.
+
+### ¿De dónde sale la normativa que utiliza?
+De documentos oficiales de ARCA/AFIP: leyes, resoluciones, manuales e instructivos, que se indexan, vectorizan y actualizan automáticamente.
+
+¿Sirve para monotributistas y responsables inscriptos?
+Sí. La IA usa el contexto de cada cliente (régimen, provincia, actividad) para dar respuestas acordes a su situación particular.
+
+### ¿Se puede verificar las respuestas?
+Sí. Cada respuesta que usa normativa incluye la cita al documento y su fuente para que puedas abrir el enlace y comprobar el texto.
+
+### ¿Qué pasa con la privacidad de los clientes?
+Cada contador accede únicamente a sus propios clientes y conversaciones, protegido por autenticación y permisos a nivel de fila.
+
+## Enlaces útiles
+
+- Home: https://accountantai.com/
+- Blog: https://accountantai.com/blog
+- Crear cuenta: https://accountantai.com/auth/sign-up

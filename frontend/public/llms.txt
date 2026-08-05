@@ -1,0 +1,19 @@
+# AccountantAI
+
+> AccountantAI es un asistente de inteligencia artificial para estudios contables de Argentina. Responde consultas tributarias respaldadas en la normativa oficial de ARCA/AFIP, con la cita al documento usado y una carpeta de historial por cliente. Idioma: español (Argentina).
+
+## Services
+
+- [AccountantAI](https://accountantai.com/): asistente de IA con respuestas citadas a la normativa ARCA/AFIP, contexto por cliente e historial por consultas en carpetas.
+- [Blog: IA y normativa contable](https://accountantai.com/blog): artículos sobre RAG, IA generativa y buenas prácticas de verificación para estudios contables.
+
+## Company
+
+- [Acerca de AccountantAI](https://accountantai.com/): asistente de IA para estudios contables de Argentina. RAG sobre normativa ARCA/AFIP.
+
+## Important Page
+
+- Home: https://accountantai.com/
+- Sign up: https://accountantai.com/auth/sign-up
+
+For the full content of this site, see https://accountantai.com/llms-full.txt

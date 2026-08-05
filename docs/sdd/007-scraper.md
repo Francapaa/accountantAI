@@ -11,7 +11,10 @@ invoicing, recategorization, withholdings, etc.) so the RAG can answer with cita
 
 **In scope:**
 - Curated source-URL seed list.
-- Download (via Playwright for JS-heavy pages) → parse (HTML/PDF) → clean.
+- Download (via Playwright for JS-heavy pages).
+- **Persist every raw source (PDF/HTML) in a private Supabase Storage bucket** — single source of
+  truth for the raw files.
+- Parse (HTML/PDF) → clean.
 - Chunking → embedding → upsert into `documents` + `document_chunks`.
 - Failure handling and manual fallback.
 
@@ -25,7 +28,8 @@ invoicing, recategorization, withholdings, etc.) so the RAG can answer with cita
 |---|---|
 | Source strategy | **Curated URL seed list** (not open crawl) — ARCA is JS-heavy and blocks aggressive crawling |
 | Driver | Playwright |
-| Parsing | HTML via readability-style extraction; PDF via text extractor |
+| Raw-file storage | **Private Supabase Storage bucket** (`normativa`) — every source uploaded as an object (`.pdf` or `.html`); bucket is private, accessed only by the backend service role |
+| Parsing | HTML via readability-style extraction; PDF via `pypdf` text extractor |
 | Document types | `FAQ, Resolución, Manual, Ley, Instructivo` |
 | Chunking | By section/heading with overlap (e.g. 500 tokens, 50 overlap) |
 | Idempotency | Upsert by unique `source_url`; recompute `content_hash` |
@@ -47,16 +51,22 @@ Curated configuration (initial topics):
 
 ```
 For each seed URL (idempotent):
-  1. Download (Playwright) → raw bytes
+  1. Download (Playwright) → raw_bytes + content_type (PDF or HTML)
   2. Compute content_hash (SHA-256 of raw content)
-  3. If documents exists for URL and hash unchanged → skip (no re-embed)
-  4. Else: parse (HTML→text / PDF→text) → clean
-  5. Chunk (by headings, with overlap)
-  6. Embed each chunk # if first run, then upsert:
-     - documents: title, source_url, document_type, publication_date, content_hash, status
+  3. If documents exists for URL and hash unchanged → skip (no re-upload, no re-embed)
+  4. Else: upload raw_bytes to the `normativa` bucket → storage_path
+  5. Parse (HTML→text / PDF→text) from the stored object → clean
+  6. Chunk (by headings, with overlap)
+  7. Embed each chunk # if first run, then upsert:
+     - documents: title, source_url, storage_path, document_type, publication_date,
+       content_hash, status
      - delete existing chunks for this document, then insert new chunks (unique doc_id+index)
-  7. On 404/gone → mark document is_active = false (tombstone)
+  8. On 404/gone → mark document is_active = false (tombstone)
 ```
+
+Raw files are uploaded **before** parsing so the private bucket is the durable origin of every
+normativa source. Chunking reads from the stored object, keeping the raw corpus and its vectorized
+form consistent and reproducible.
 
 > Failure handling: per-URL try/catch, log failures with reason, continue the batch. A failed
 > URL is left with `status=failed` and retried on the next run.
@@ -64,19 +74,19 @@ For each seed URL (idempotent):
 ## Manual Fallback
 
 If a normativa source cannot be scraped (login wall, CAPTCHA, anti-bot), the operator can upload
-a PDF via an admin ingestion endpoint. Uploaded files follow the same parse → chunk → embed path,
-recording `source_url` as a local/internal marker plus `is_manual=true`.
+a PDF via an admin ingestion endpoint. Uploaded files follow the same **upload-to-bucket → parse →
+chunk → embed** path, recording `source_url` as a local/internal marker plus `is_manual=true`.
 
 ## Data Model (touched tables)
 
 `documents` and `document_chunks` — full DDL in [009](./009-database-schema.md). Key fields used
-here: `source_url` (unique), `content_hash`, `status`, `is_active`, `document_type`,
-`publication_date`, `crawled_at`.
+here: `source_url` (unique), `storage_path` (object in the `normativa` bucket), `content_hash`,
+`status`, `is_active`, `document_type`, `publication_date`, `crawled_at`.
 
 ## Workflows
 
 **Given** a new seed URL, **when** ingestion runs, **then** the document is downloaded, hashed,
-chunked, embedded, and upserted.
+uploaded to the `normativa` bucket, chunked, embedded, and upserted.
 
 **Given** a URL already ingested, **when** ingestion runs again, **then** unchanged hashes are
 skipped (no duplicated chunks, no redundant embedding).
@@ -91,11 +101,13 @@ with `is_manual=true`.
 
 1. Ingestion is idempotent (re-running does not duplicate documents or chunks).
 2. Each document is stored once by `source_url` with an accurate `content_hash`.
-3. Chunking preserves source attribution (every chunk ties to its document + index).
-4. Embedded chunks use the active model and are searchable via pgvector.
-5. HTML and PDF sources both produce clean text.
-6. Failed/un-scrapable URLs are handled gracefully with a manual fallback.
-7. Respects rate limits and robots; does not hammer ARCA.
+3. **Every raw source (PDF/HTML) is persisted as an object in the private `normativa` bucket and
+   referenced by `documents.storage_path`.**
+4. Chunking preserves source attribution (every chunk ties to its document + index).
+5. Embedded chunks use the active model and are searchable via pgvector.
+6. HTML and PDF sources both produce clean text.
+7. Failed/un-scrapable URLs are handled gracefully with a manual fallback.
+8. Respects rate limits and robots; does not hammer ARCA.
 
 ## Open Questions
 
@@ -108,3 +120,4 @@ with `is_manual=true`.
 | Date | Change |
 |---|---|
 | 2026-08-04 | Scraper/ingestion spec created with curated seed list + manual fallback. |
+| 2026-08-05 | Raw sources (PDF/HTML) are now persisted in a private Supabase Storage bucket (`normativa`) before parsing/chunking; added `documents.storage_path`. |

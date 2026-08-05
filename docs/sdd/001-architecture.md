@@ -74,7 +74,7 @@ accountantAI/
 │   └── app/
 │       ├── api/         # REST endpoints
 │       ├── rag/         # embedding + retrieval + prompt
-│       ├── ingestion/   # scraper + parser + chunker + embedder
+│       ├── ingestion/   # scraper + storage(bucket) + parser + chunker + embedder
 │       └── scheduler/   # nightly cron
 ├── supabase/            # SQL migrations (schema + indexes + RLS policies)
 └── docs/sdd/            # these specs
@@ -101,11 +101,12 @@ Detailed behavior in [006-rag-pipeline](./006-rag-pipeline.md) and [005-chat-con
 ```
 1. Curated URL seed list (config)
 2. Crawl/Download raw content (Playwright)
-3. Parse HTML/PDF → text
-4. Clean (strip boilerplate, normalize whitespace)
-5. Chunk with overlap (by section / heading)
-6. Embed each chunk (text-embedding-004)
-7. Upsert into documents + document_chunks (pgvector)
+3. Upload raw file (PDF/HTML) to the private `normativa` Storage bucket → storage_path
+4. Parse the stored HTML/PDF → text
+5. Clean (strip boilerplate, normalize whitespace)
+6. Chunk with overlap (by section / heading)
+7. Embed each chunk (text-embedding-004)
+8. Upsert into documents + document_chunks (pgvector)
 ```
 
 Detailed behavior in [007-scraper](./007-scraper.md).
@@ -139,3 +140,4 @@ Detailed behavior in [007-scraper](./007-scraper.md).
 |---|---|
 | 2026-08-04 | Initial architecture accepted: Next.js + FastAPI + Supabase (pgvector) + Gemini. |
 | 2026-08-05 | Embedding dimension fixed to 1536 (`output_dimensionality=1536`) to stay under the pgvector 2000-dim index limit. |
+| 2026-08-05 | Raw normativa sources (PDF/HTML) are persisted in a private Supabase Storage bucket (`normativa`) before chunking; ingestion flow and repo layout updated. |

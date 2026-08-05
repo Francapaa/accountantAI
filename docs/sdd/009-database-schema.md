@@ -89,7 +89,7 @@ Citations shape: `[{ document_id, title, document_type, source_url, quoted_excer
 | document_id | uuid fk → documents(id) on delete cascade | |
 | chunk_index | int not null | |
 | content | text not null | |
-| embedding | vector(3072) | Google text-embedding-004 |
+| embedding | vector(1536) | Google text-embedding-004 with output_dimensionality=1536 (indexes are limited to 2000 dims) |
 | embedding_model | text not null | active version gate |
 | chunk_hash | text | |
 | created_at | timestamptz | |
@@ -196,7 +196,8 @@ chunk_index` uniqueness prevents duplicates.
 
 ## Open Questions
 
-- `vector(3072)` default; confirm the exact Google embedding model output dimension before migration.
+- `vector(1536)` — configured via Google `output_dimensionality=1536` because pgvector indexes
+  support at most 2000 dimensions.
 - Whether `conversations.owner_id` should be derived vs stored — stored for query efficiency (denormalized), kept in sync by the app.
 
 ## Changelog
@@ -204,3 +205,4 @@ chunk_index` uniqueness prevents duplicates.
 | Date | Change |
 |---|---|
 | 2026-08-04 | Full schema + indexes + RLS spec created. |
+| 2026-08-05 | Embedding dimension changed to 1536 (`output_dimensionality=1536`) because pgvector indexes are limited to 2000 dimensions. Migrations validated against Postgres + pgvector. |

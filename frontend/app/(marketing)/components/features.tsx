@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/lib/components/ui/card";
+import { Reveal } from "@/lib/components/reveal";
 import {
   BookOpenCheck,
   Building2,
@@ -7,6 +8,8 @@ import {
   Lightbulb,
   Search,
 } from "lucide-react";
+
+import { SectionHeading } from "./section-heading";
 
 const features = [
   {
@@ -49,35 +52,32 @@ const features = [
 
 export function Features() {
   return (
-    <section id="funcionalidades" className="py-20">
+    <section id="funcionalidades" className="relative py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-            Funcionalidades
-          </p>
-          <h2 className="mt-3 font-heading text-3xl font-bold tracking-tight sm:text-4xl">
-            Todo lo que un contador necesita para dejar de repetir
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Una herramienta pensada para el trabajo real de un estudio contable
-            en Argentina.
-          </p>
-        </div>
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature) => (
-            <Card key={feature.title} className="transition-shadow hover:shadow-md">
-              <CardHeader>
-                <div className="mb-3 flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <feature.icon className="size-6" aria-hidden="true" />
-                </div>
-                <CardTitle className="font-heading text-lg">
-                  {feature.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </CardContent>
-            </Card>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Funcionalidades"
+            title="Todo lo que un contador necesita para dejar de repetir"
+            description="Una herramienta pensada para el trabajo real de un estudio contable en Argentina."
+          />
+        </Reveal>
+        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature, i) => (
+            <Reveal key={feature.title} delay={i * 60}>
+              <Card className="h-full transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-1 hover:border-border hover:shadow-[0_24px_50px_-24px_rgb(0_0_0/0.3)]">
+                <CardHeader>
+                  <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/10">
+                    <feature.icon className="size-6" aria-hidden="true" />
+                  </div>
+                  <CardTitle className="font-heading text-lg">
+                    {feature.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
+            </Reveal>
           ))}
         </div>
       </div>

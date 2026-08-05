@@ -31,14 +31,15 @@ pieces (frontend, backend, Supabase, Gemini) fit together.
 | Backend API + RAG | **FastAPI (Python)** | Mature Python RAG/embedding ecosystem, official Google SDK. |
 | Database + Vectors | **Supabase (PostgreSQL + pgvector)** | One provider for Postgres, vectors, built-in Auth, and RLS. |
 | Chat model | **Google Gemini 2.5** | Chosen by product for answer quality. |
-| Embedding model | **Google `text-embedding-004`** | Separate from chat model; fixed dimension **3072**. |
+| Embedding model | **Google `text-embedding-004`** (call with `output_dimensionality=1536`) | Separate from chat model; configured dimension **1536** to stay under pgvector's 2000-dim index limit. |
 | Auth | **Supabase Auth** | Multi-accountant, integrated Row-Level Security. |
 | Ingestion | **Playwright scraper from curated URL seed list** | Open crawl of ARCA is too heavy and blocked; curated seeds are robust. |
 | Scheduling | **Nightly cron on backend (APScheduler / external scheduler)** | See [008-cron-sync](./008-cron-sync.md). |
 
-> **Embedding dimension is fixed.** The `pgvector` column dimension (3072) MUST match the
-> embedding model output. Changing the model requires a data migration (re-embed) — versioned
-> per chunk.
+> **Embedding dimension is fixed.** The `pgvector` column dimension (1536) MUST match the
+> embedding model output (`output_dimensionality=1536`). pgvector indexes support at most
+> 2000 dimensions, so 1536 keeps the HNSW index valid. Changing the model requires a data
+> migration (re-embed) — versioned per chunk.
 
 ## Logical Architecture
 
@@ -137,3 +138,4 @@ Detailed behavior in [007-scraper](./007-scraper.md).
 | Date | Change |
 |---|---|
 | 2026-08-04 | Initial architecture accepted: Next.js + FastAPI + Supabase (pgvector) + Gemini. |
+| 2026-08-05 | Embedding dimension fixed to 1536 (`output_dimensionality=1536`) to stay under the pgvector 2000-dim index limit. |

@@ -29,7 +29,7 @@ invoicing, recategorization, withholdings, etc.) so the RAG can answer with cita
 | Document types | `FAQ, Resolución, Manual, Ley, Instructivo` |
 | Chunking | By section/heading with overlap (e.g. 500 tokens, 50 overlap) |
 | Idempotency | Upsert by unique `source_url`; recompute `content_hash` |
-| Embeddings | Google `text-embedding-004` (3072 dims) |
+| Embeddings | Google `text-embedding-004` (`output_dimensionality=1536`) |
 | Respect | Rate limiting, user-agent, robots compliance; manual fallback for blocked sections |
 
 ## Source-URL Seed List

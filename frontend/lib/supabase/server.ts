@@ -1,27 +1,33 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-function assertEnv(): { url: string; anonKey: string } {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!url || !anonKey) {
-    throw new Error(
-      "Supabase environment variables are not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to your .env.local file.",
-    );
-  }
-
-  return { url, anonKey };
-}
+import { assertEnv, AUTH_COOKIE_NAME } from "./env";
 
 /**
- * Server-side Supabase client (anon key + RLS).
+ * Server-side Supabase client (anon key + RLS) with cookie-based sessions.
  * Use inside Server Components and Server Actions. RLS scopes the data.
  */
 export function getSupabaseServerClient(): SupabaseClient {
   const { url, anonKey } = assertEnv();
-  return createClient(url, anonKey, {
-    auth: {
-      persistSession: false,
+
+  return createServerClient(url, anonKey, {
+    cookieOptions: { name: AUTH_COOKIE_NAME },
+    cookies: {
+      getAll() {
+        return cookies().then((c) => c.getAll());
+      },
+      setAll(cookiesToSet) {
+        try {
+          cookies().then((c) => {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              c.set(name, value, options);
+            });
+          });
+        } catch {
+          // Called from a Server Component; the proxy (proxy.ts) writes cookies.
+        }
+      },
     },
   });
 }

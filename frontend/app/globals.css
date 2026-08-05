@@ -128,3 +128,87 @@
     @apply font-sans;
   }
 }
+
+/* ── Motion tokens ─────────────────────────────────────────────── */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Entrance: fade + subtle rise. Not scale(0) — nothing appears from nothing. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Stagger-friendly helpers: use `animation-delay` per element. */
+.animate-rise-in {
+  opacity: 0;
+  animation: rise-in 420ms var(--ease-out) forwards;
+}
+
+.animate-fade-in {
+  opacity: 0;
+  animation: fade-in 300ms ease-out forwards;
+}
+
+.animate-scale-in {
+  opacity: 0;
+  animation: scale-in 360ms var(--ease-out) forwards;
+}
+
+/* Error shake: fast, short, non-permanent */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.animate-shake {
+  animation: shake 240ms ease-out;
+}
+
+/* Reduce motion: fade only, no movement. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise-in,
+  .animate-fade-in,
+  .animate-scale-in,
+  .animate-shake {
+    animation-duration: 0.01ms;
+  }
+}

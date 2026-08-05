@@ -9,6 +9,7 @@ def assert_env() -> tuple[str, str]:
             "Supabase is not configured. Add SUPABASE_URL and "
             "SUPABASE_SERVICE_ROLE_KEY to the backend .env file."
         )
+    print("TODO CORRECTO.")
     return settings.supabase_url, settings.supabase_service_role_key
 
 

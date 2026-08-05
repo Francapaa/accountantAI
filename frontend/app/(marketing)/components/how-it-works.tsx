@@ -1,4 +1,7 @@
 import { Card, CardContent } from "@/lib/components/ui/card";
+import { Reveal } from "@/lib/components/reveal";
+
+import { SectionHeading } from "./section-heading";
 
 const steps = [
   {
@@ -23,32 +26,32 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="como-funciona" className="border-t bg-muted/40 py-20">
+    <section id="como-funciona" className="relative border-t bg-muted/40 py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-            Cómo funciona
-          </p>
-          <h2 className="mt-3 font-heading text-3xl font-bold tracking-tight sm:text-4xl">
-            En tres pasos, de la consulta a la respuesta
-          </h2>
-        </div>
-        <ol className="mt-14 grid gap-6 md:grid-cols-3">
-          {steps.map((item) => (
+        <Reveal>
+          <SectionHeading
+            eyebrow="Cómo funciona"
+            title="En tres pasos, de la consulta a la respuesta"
+          />
+        </Reveal>
+        <ol className="mt-14 grid gap-5 md:grid-cols-3">
+          {steps.map((item, i) => (
             <li key={item.step}>
-              <Card className="h-full">
-                <CardContent className="pt-6">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
-                    {item.step}
-                  </span>
-                  <h3 className="mt-5 font-heading text-xl font-semibold">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-muted-foreground">
-                    {item.description}
-                  </p>
-                </CardContent>
-              </Card>
+              <Reveal delay={i * 90}>
+                <Card className="h-full transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_24px_50px_-24px_rgb(0_0_0/0.3)]">
+                  <CardContent className="pt-6">
+                    <span className="flex size-10 items-center justify-center rounded-full bg-primary font-heading text-lg font-bold text-primary-foreground ring-4 ring-primary/20">
+                      {item.step}
+                    </span>
+                    <h3 className="mt-5 font-heading text-xl font-semibold">
+                      {item.title}
+                    </h3>
+                    <p className="mt-3 text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Reveal>
             </li>
           ))}
         </ol>

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.me import router as me_router
 from app.core.config import settings
 
 app = FastAPI(
@@ -21,3 +22,9 @@ app.add_middleware(
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "app": settings.app_name}
+
+@app.get("/")
+def response() -> dict[str, str]:
+    return {"status": "ok", "message": "FUNCA PAAA"}
+
+app.include_router(me_router)

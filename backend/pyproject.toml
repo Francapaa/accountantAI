@@ -15,6 +15,7 @@ dependencies = [
     "pyjwt>=2.13.0",
     "pypdf>=6.14.2",
     "python-dotenv>=1.2.2",
+    "pyyaml>=6.0.3",
     "supabase>=2.31.0",
     "uvicorn[standard]>=0.52.1",
 ]
@@ -22,6 +23,7 @@ dependencies = [
 [project.scripts]
 dev = "app.run:dev"
 start = "app.run:start"
+ingest = "app.ingestion.cli:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -32,3 +34,8 @@ package = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]

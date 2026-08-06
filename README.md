@@ -214,6 +214,34 @@ uv run python script.py   # run any Python script in the environment
 uv add <package>  # add a new dependency (updates pyproject.toml + uv.lock)
 ```
 
+#### Regulation ingestion (normativa ARCA)
+
+Requires the Playwright Chromium browser (once):
+
+```bash
+uv run playwright install chromium
+```
+
+Run a one-shot ingestion batch (idempotent — re-running skips unchanged sources):
+
+```bash
+uv run ingest                 # full batch
+uv run ingest --dry-run       # print the curated seed list only
+uv run ingest -v              # verbose logs
+```
+
+The curated seed list lives in `backend/app/ingestion/config/seed_urls.yaml` (grouped by topic,
+with `index`/`discovery` flags for bounded link discovery from ARCA index pages — see
+[`docs/sdd/007-scraper.md`](./docs/sdd/007-scraper.md)). Sources are downloaded with Playwright,
+raw files are persisted in the private `normativa` Storage bucket, and chunks are embedded with
+`text-embedding-004` (1536 dims) before being upserted into `documents` + `document_chunks`.
+
+Run the tests:
+
+```bash
+uv run python -m pytest app/ingestion/tests
+```
+
 ### Environment variables
 
 **Frontend (`.env.local`):**
@@ -233,6 +261,12 @@ uv add <package>  # add a new dependency (updates pyproject.toml + uv.lock)
 | `SUPABASE_SERVICE_ROLE_KEY` | Service key (server/RAG/ingestion) |
 | `GEMINI_API_KEY` | Google Gemini API key |
 | `CORS_ORIGINS` | Allowed origins for calling the API |
+| `EMBEDDING_MODEL` | Embedding model (default `text-embedding-004`) |
+| `EMBEDDING_DIMENSIONS` | Embedding dimensions (default `1536`) |
+| `USER_AGENT` | User-Agent sent to ARCA |
+| `INGEST_RATE_LIMIT_DELAY` | Seconds between requests (default `2.0`) |
+| `ROBOTS_CHECK_ENABLED` | Respect robots.txt (default `true`) |
+| `HEADLESS` | Run Playwright headless (default `true`) |
 
 > **Never** commit real secrets. Service keys live only in the backend.
 

@@ -31,7 +31,7 @@ pieces (frontend, backend, Supabase, Gemini) fit together.
 | Backend API + RAG | **FastAPI (Python)** | Mature Python RAG/embedding ecosystem, official Google SDK. |
 | Database + Vectors | **Supabase (PostgreSQL + pgvector)** | One provider for Postgres, vectors, built-in Auth, and RLS. |
 | Chat model | **Google Gemini 2.5** | Chosen by product for answer quality. |
-| Embedding model | **Google `text-embedding-004`** (call with `output_dimensionality=1536`) | Separate from chat model; configured dimension **1536** to stay under pgvector's 2000-dim index limit. |
+| Embedding model | **Google `gemini-embedding-2`** (call with `output_dimensionality=1536`) | Separate from chat model; configured dimension **1536** to stay under pgvector's 2000-dim index limit. |
 | Auth | **Supabase Auth** | Multi-accountant, integrated Row-Level Security. |
 | Ingestion | **Playwright scraper from curated URL seed list** | Open crawl of ARCA is too heavy and blocked; curated seeds are robust. |
 | Scheduling | **Nightly cron on backend (APScheduler / external scheduler)** | See [008-cron-sync](./008-cron-sync.md). |
@@ -87,7 +87,7 @@ accountantAI/
 ```
 1. Frontend page calls backend POST /api/chat (client_id + message)
 2. Backend loads client persistent profile (context)
-3. Backend embeds the query (text-embedding-004)
+3. Backend embeds the query (gemini-embedding-2)
 4. Backend runs semantic search over document_chunks (pgvector)
 5. Backend builds prompt: client context + retrieved chunks (source of truth)
 6. Backend calls Gemini 2.5 to produce the answer
@@ -107,7 +107,7 @@ Detailed behavior in [006-rag-pipeline](./006-rag-pipeline.md) and [005-chat-con
 4. Parse the stored HTML/PDF → text
 5. Clean (strip boilerplate, normalize whitespace)
 6. Chunk with overlap (by section / heading)
-7. Embed each chunk (text-embedding-004)
+7. Embed each chunk (gemini-embedding-2)
 8. Upsert into documents + document_chunks (pgvector)
 ```
 
@@ -115,7 +115,7 @@ Detailed behavior in [007-scraper](./007-scraper.md).
 
 ## Embedding Model Versioning
 
-- Every `document_chunk` row stores `embedding_model` (e.g. `text-embedding-004`).
+- Every `document_chunk` row stores `embedding_model` (e.g. `gemini-embedding-2`).
 - If the embedding model changes:
   1. Update the version constant.
   2. Re-run ingestion for all documents (or a migration script) to re-embed.

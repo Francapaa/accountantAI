@@ -35,6 +35,7 @@ pieces (frontend, backend, Supabase, Gemini) fit together.
 | Auth | **Supabase Auth** | Multi-accountant, integrated Row-Level Security. |
 | Ingestion | **Playwright scraper from curated URL seed list** | Open crawl of ARCA is too heavy and blocked; curated seeds are robust. |
 | Scheduling | **Nightly cron on backend (APScheduler / external scheduler)** | See [008-cron-sync](./008-cron-sync.md). |
+| WhatsApp transport | **Meta Cloud API direct + `IWhatsAppProvider` abstraction** | Swappable provider; free-form replies within 24h are free. See [010](./010-whatsapp-adapter.md). Provides a `backend/app/whatsapp/` module. |
 
 > **Embedding dimension is fixed.** The `pgvector` column dimension (1536) MUST match the
 > embedding model output (`output_dimensionality=1536`). pgvector indexes support at most
@@ -75,6 +76,7 @@ accountantAI/
 │       ├── api/         # REST endpoints
 │       ├── rag/         # embedding + retrieval + prompt
 │       ├── ingestion/   # scraper + storage(bucket) + parser + chunker + embedder
+│       ├── whatsapp/    # WhatsApp provider abstraction (Meta Cloud API) — see 010
 │       └── scheduler/   # nightly cron
 ├── supabase/            # SQL migrations (schema + indexes + RLS policies)
 └── docs/sdd/            # these specs

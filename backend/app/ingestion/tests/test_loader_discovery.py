@@ -140,6 +140,21 @@ def test_infer_document_type_search_query():
     )
 
 
+def test_infer_document_type_infoleg():
+    assert (
+        infer_document_type(
+            "https://servicios.infoleg.gob.ar/infolegInternet/anexos/15000-19999/18771/texact.htm"
+        )
+        == "Ley"
+    )
+    assert (
+        infer_document_type(
+            "https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=18771"
+        )
+        == "Ley"
+    )
+
+
 def test_is_allowed():
     assert is_allowed("https://biblioteca.afip.gob.ar/dcp/DEC_C_000661_2024_07_23")
     assert is_allowed("https://www.arca.gob.ar/monotributo/ayuda/recategorizacion.asp")
@@ -151,6 +166,16 @@ def test_is_allowed():
     )
     assert not is_allowed("https://www.arca.gob.ar/monotributo/default.asp")
     assert not is_allowed("https://www.boletinoficial.gob.ar/detalleAviso/primera/1/20240101")
+
+
+def test_is_allowed_infoleg():
+    assert is_allowed(
+        "https://servicios.infoleg.gob.ar/infolegInternet/anexos/15000-19999/18771/texact.htm"
+    )
+    assert is_allowed(
+        "https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=18771"
+    )
+    assert not is_allowed("https://www.infoleg.gob.ar/")
 
 
 def test_storage_path_is_deterministic():

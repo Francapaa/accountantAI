@@ -119,3 +119,71 @@ topics:
     title: Normativa de clave fiscal (índice)
     index: true
     discovery: true
+- name: marco
+  seeds:
+  - url: https://servicios.infoleg.gob.ar/infolegInternet/anexos/15000-19999/18771/texact.htm
+    document_type: Ley
+    title: Ley 11.683 (t.o. 1998) — Ley de Procedimiento Tributario
+    discovery: false
+    index: false
+  - url: https://biblioteca.afip.gob.ar/dcp/LEY_C_023349_1986_08_07
+    document_type: Ley
+    title: Ley 23.349 — Impuesto al Valor Agregado
+    discovery: false
+    index: false
+  - url: https://biblioteca.afip.gob.ar/dcp/TOR_C_020631_1997_03_26
+    document_type: Ley
+    title: Ley de IVA — texto ordenado 1997
+    discovery: false
+    index: false
+  - url: https://biblioteca.afip.gob.ar/search/query/dcp/LEY_C_024977_1998_06_03
+    document_type: Ley
+    title: Ley 24.977 — Régimen Simplificado para Pequeños Contribuyentes (Monotributo)
+    discovery: false
+    index: false
+  - url: https://biblioteca.afip.gob.ar/dcp/DEC_C_000862_2019_12_06
+    document_type: Ley
+    title: Decreto 862/2019 — Reglamentación de la Ley de Ganancias (t.o. 2019)
+    discovery: false
+    index: false
+- name: retenciones
+  seeds:
+  - url: https://www.afip.gob.ar/sire/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa de retenciones SIRE (índice)
+    index: true
+    discovery: true
+  - url: https://biblioteca.afip.gob.ar/dcp/REAG01004003_2017_03_02
+    document_type: Resolución
+    title: RG 4003/2017 — SIRADIG (declaración en línea)
+    discovery: false
+    index: false
+- name: seguridad-social
+  seeds:
+  - url: https://biblioteca.afip.gob.ar/dcp/REAG01005250_2022_08_16
+    document_type: Resolución
+    title: RG 5250/2022 — Libro de Sueldos Digital
+    discovery: false
+    index: false
+- name: autonomos
+  seeds:
+  - url: https://www.arca.gob.ar/autonomos/
+    document_type: Manual
+    title: Autónomos — régimen previsional por cuenta propia
+    discovery: false
+    index: false
+  - url: https://www.arca.gob.ar/autonomos/que-es/
+    document_type: Instructivo
+    title: Autónomos — qué es el régimen
+    discovery: false
+    index: false
+  - url: https://www.arca.gob.ar/autonomos/categorias-y-aportes/
+    document_type: Instructivo
+    title: Autónomos — categorías y aportes
+    discovery: false
+    index: false
+  - url: https://www.arca.gob.ar/autonomos/inscripcion/
+    document_type: Instructivo
+    title: Autónomos — inscripción y desarrollo de la actividad
+    discovery: false
+    index: false

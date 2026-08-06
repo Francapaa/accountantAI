@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/lib/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Logo } from "./logo";
+import { Logo } from "@/lib/components/logo";
 
 const navLinks = [
   { href: "#funcionalidades", label: "Funcionalidades" },

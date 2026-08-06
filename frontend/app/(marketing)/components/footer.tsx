@@ -1,5 +1,5 @@
 import { siteConfig } from "@/lib/config/site";
-import { Logo } from "./logo";
+import { Logo } from "@/lib/components/logo";
 
 export function Footer() {
   const year = new Date().getFullYear();

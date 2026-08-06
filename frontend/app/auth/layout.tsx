@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { Logo } from "@/app/(marketing)/components/logo";
+import { Logo } from "@/lib/components/logo";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {

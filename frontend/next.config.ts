@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const securityHeaders = [
   {
     key: "Content-Security-Policy",
@@ -10,7 +12,7 @@ const securityHeaders = [
       "img-src 'self' https: data:",
       "frame-ancestors 'none'",
       "style-src 'self' 'unsafe-inline' https:",
-      "script-src 'self' 'unsafe-inline' https:",
+      `script-src 'self' 'unsafe-inline' https:${isDev ? " 'unsafe-eval'" : ""}`,
       "connect-src 'self' https:",
       "object-src 'none'",
     ].join("; "),

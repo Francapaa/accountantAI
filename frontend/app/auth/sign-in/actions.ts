@@ -29,6 +29,7 @@ export async function signIn(
     if (error.message.toLowerCase().includes("email not confirmed")) {
       return { error: "Confirmá tu email antes de iniciar sesión." };
     }
+    console.error("ERROR:" , error.message); 
     return { error: "Email o contraseña incorrectos." };
   }
 

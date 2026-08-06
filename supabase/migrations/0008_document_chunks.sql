@@ -1,6 +1,6 @@
 -- 0008: document_chunks (vectorized chunks for RAG)
 
--- embedding dimension is 1536 (Google text-embedding-004 with
+-- embedding dimension is 1536 (Google gemini-embedding-2 with
 -- output_dimensionality=1536). pgvector indexes are limited to 2000
 -- dimensions, so 1536 keeps the HNSW index valid and storage small.
 

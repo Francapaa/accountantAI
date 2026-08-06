@@ -25,7 +25,7 @@ must **always answer with citations** so the accountant can verify before sendin
 
 | Decision | Choice |
 |---|---|
-| Query embedding | Google `text-embedding-004` with `output_dimensionality=1536` — same model as ingestion |
+| Query embedding | Google `gemini-embedding-2` with `output_dimensionality=1536` — same model as ingestion |
 | Retrieval | `pgvector` HNSW index, cosine similarity |
 | Top-K | `k=5` (configurable) |
 | Chunk rerank | MVP: none; rely on similarity + prompt instruction |

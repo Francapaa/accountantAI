@@ -1,0 +1,121 @@
+# seed_urls.yaml — Lista curada de fuentes de normativa ARCA, agrupada por tema.
+# Cada seed: url, document_type, title, index (página índice), discovery (extraer links).
+# Los índices "normativa.asp" de ayuda por tema con index+discovery=true se
+# recorren en profundidad 1 para descubrir las normas que listan (leyes,
+# decretos y resoluciones, incluidas las recientes en formato search/query).
+topics:
+- name: monotributo
+  seeds:
+  - url: https://www.arca.gob.ar/monotributo/default.asp
+    document_type: Manual
+    title: Monotributo — régimen simplificado
+    discovery: false
+    index: false
+  - url: https://www.arca.gob.ar/monotributo/ayuda/recategorizacion.asp
+    document_type: Instructivo
+    title: Recategorización semestral del monotributo
+    discovery: false
+    index: false
+  - url: https://www.afip.gob.ar/monotributo/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa del monotributo (índice)
+    index: true
+    discovery: true
+  - url: https://biblioteca.afip.gob.ar/dcp/DEC_C_000661_2024_07_23
+    document_type: Ley
+    title: Decreto 661/2024 — adecuaciones al monotributo
+    discovery: false
+    index: false
+- name: facturacion
+  seeds:
+  - url: https://www.arca.gob.ar/facturacion/
+    document_type: Manual
+    title: Facturación — guía general
+    discovery: false
+    index: false
+  - url: https://www.arca.gob.ar/facturacion/monotributo/factura-electronica.asp
+    document_type: Instructivo
+    title: Factura electrónica para monotributo
+    discovery: false
+    index: false
+  - url: https://www.arca.gob.ar/facturacion/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa de facturación (índice)
+    index: true
+    discovery: true
+- name: iva
+  seeds:
+  - url: https://www.arca.gob.ar/libro-iva-digital/
+    document_type: Instructivo
+    title: Libro de IVA Digital
+    discovery: false
+    index: false
+  - url: https://www.arca.gob.ar/iva/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa de IVA (índice)
+    index: true
+    discovery: true
+  - url: https://biblioteca.afip.gob.ar/dcp/REAG09005707_2025_05_30
+    document_type: Resolución
+    title: RG 5707/2025 — Libro de IVA Digital y Portal IVA
+    discovery: false
+    index: false
+- name: ganancias
+  seeds:
+  - url: https://www.arca.gob.ar/gananciasYBienes/
+    document_type: Manual
+    title: Ganancias y Bienes Personales
+    discovery: false
+    index: false
+  - url: https://www.arca.gob.ar/gananciasYBienes/ganancias/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa de Ganancias (índice)
+    index: true
+    discovery: true
+  - url: https://biblioteca.afip.gob.ar/dcp/LEY_C_020628_2019_12_05
+    document_type: Ley
+    title: Ley 20.628 (t.o. 2019) — Impuesto a las Ganancias
+    discovery: false
+    index: false
+- name: bienes-personales
+  seeds:
+  - url: https://www.arca.gob.ar/gananciasYBienes/bienes-personales/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa de Bienes Personales (índice)
+    index: true
+    discovery: true
+- name: regimengeneral
+  seeds:
+  - url: https://www.arca.gob.ar/regimengeneral/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa del régimen general (índice)
+    index: true
+    discovery: true
+- name: casasparticulares
+  seeds:
+  - url: https://www.arca.gob.ar/casasparticulares/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa de casas particulares (índice)
+    index: true
+    discovery: true
+- name: inscripcion
+  seeds:
+  - url: https://www.arca.gob.ar/inscripcion/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa de inscripción (índice)
+    index: true
+    discovery: true
+- name: viajeros
+  seeds:
+  - url: https://www.arca.gob.ar/viajeros/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa de viajeros (índice)
+    index: true
+    discovery: true
+- name: clavefiscal
+  seeds:
+  - url: https://www.arca.gob.ar/clavefiscal/ayuda/normativa.asp
+    document_type: Manual
+    title: Normativa de clave fiscal (índice)
+    index: true
+    discovery: true

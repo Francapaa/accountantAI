@@ -22,6 +22,7 @@ Purposes:
 | 7  | [007-scraper](./007-scraper.md)                          | Crawl/download/parse/clean of ARCA/AFIP normativa            |
 | 8  | [008-cron-sync](./008-cron-sync.md)                      | Nightly incremental sync with hash checks                    |
 | 9  | [009-database-schema](./009-database-schema.md)          | Full PostgreSQL/pgvector schema + indexes + RLS policies     |
+| 10 | [010-whatsapp-adapter](./010-whatsapp-adapter.md)        | WhatsApp transport: Meta Cloud API provider abstraction       |
 
 ## Roadmap
 
@@ -39,7 +40,7 @@ Purposes:
 - Internal notes merged into RAG context
 
 ### Phase 3 (out of scope for MVP)
-- WhatsApp integration
+- WhatsApp integration ([010](./010-whatsapp-adapter.md))
 
 ## SDD conventions
 

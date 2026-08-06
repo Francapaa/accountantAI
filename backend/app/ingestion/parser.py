@@ -42,6 +42,8 @@ _MAIN_SELECTORS = (
     '[class*="content" i]',
     '[class*="texto" i]',
     '[id*="texto" i]',
+    # InfoLEG wraps the norm text in #resultados (no semantic containers).
+    "#resultados",
 )
 
 _WS_RE = re.compile(r"[ \t\u00a0]+")

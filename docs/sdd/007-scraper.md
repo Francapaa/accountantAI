@@ -70,6 +70,7 @@ For each seed with discovery=true:
      - biblioteca.{afip,arca}.gob.ar/search/query/norma.aspx?p=...  → recent norms (2024+)
      - biblioteca.{afip,arca}.gob.ar/search/query/dcp/*             → legacy slug links
      - arca.gob.ar/.../ayuda/*                                      → Manual / Instructivo / FAQ
+     - infoleg.gob.ar/.../texact.htm + verNorma.do                  → Ley (InfoLEG consolidated texts)
   3. Depth 1 only: links found on index pages are ingested; their own links are NOT followed.
   4. Dedupe by source_url against documents table; infer document_type from URL
      (e.g. /dcp/REAG0* or p=t:RAG → Resolución, LEY_C_* or p=t:LEY → Ley, DEC_C_* → Decreto)
@@ -175,3 +176,4 @@ links are extracted, deduped, and ingested as candidate seeds (depth 1, no recur
 | 2026-08-05 | Raw sources (PDF/HTML) are now persisted in a private Supabase Storage bucket (`normativa`) before parsing/chunking; added `documents.storage_path`. |
 | 2026-08-05 | Added bounded link discovery from curated index pages; `seed_urls.yaml` grouped by topic with `index`/`discovery` flags. |
 | 2026-08-06 | Allowlist extended to `search/query/norma.aspx` + `search/query/dcp/*` (recent norms 2024+); added 8 more topic indexes to `seed_urls.yaml` (facturación, IVA, bienes personales, régimen general, casas particulares, inscripción, viajeros, clave fiscal); `infer_document_type` reads the `p=t:TIPO` param of search URLs. |
+| 2026-08-06 | Ampliación del corpus: topics `marco` (Ley 11.683 t.o. 1998 vía InfoLEG, Ley 23.349, IVA t.o. 1997, Ley 24.977, Dto. 862/2019), `retenciones` (índice SIRE + discovery RG 3726/4523/4595/4640/4798 + RG 2233, RG 4003 SIRADIG), `seguridad-social` (RG 5250/2022 Libro de Sueldos Digital), `autonomos` (subpáginas directas con valores de categorías y procedimiento). Allowlist y `infer_document_type` extendidos a InfoLEG; parser agrega `#resultados` (contenedor de InfoLEG). Excluidos Convenio Multilateral y consultas ABC. El micrositio LSD se descartó (app JS, texto solo de navegación). Total activos: 168 docs. |

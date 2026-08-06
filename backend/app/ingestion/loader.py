@@ -3,6 +3,7 @@
 
 import yaml
 from pathlib import Path
+from urllib.parse import urlparse
 
 from app.ingestion.models import Seed
 
@@ -37,8 +38,8 @@ def load_seeds(path: Path | str | None = None) -> list[Seed]:
 
 
 def is_allowed(url: str) -> bool:
-    """Discovery allowlist: Electrónica Library details + ARCA help pages."""
-    return is_biblioteca_detail(url) or is_arca_help(url)
+    """Discovery allowlist: Electrónica Library details + ARCA help + InfoLEG."""
+    return is_biblioteca_detail(url) or is_arca_help(url) or is_infoleg(url)
 
 
 def is_biblioteca_detail(url: str) -> bool:
@@ -66,8 +67,20 @@ def is_arca_help(url: str) -> bool:
     return host_ok and "/ayuda/" in url
 
 
+def is_infoleg(url: str) -> bool:
+    """InfoLEG norm pages on either host (static texact.htm or dynamic verNorma.do)."""
+    if not any(h in url for h in ("infoleg.gob.ar", "servicios.infoleg.gob.ar")):
+        return False
+    path = urlparse(url).path
+    return "texact.htm" in path or "verNorma.do" in path
+
+
 def infer_document_type(url: str) -> str:
     """Infer document_type from the URL (used for discovered seeds)."""
+    if is_infoleg(url):
+        # InfoLEG hosts national laws, decrees and joint resolutions; without a
+        # norm code in the URL we default to the most common case (ley).
+        return "Ley"
     if is_biblioteca_detail(url):
         tipo = _biblioteca_tipo(url)
         if tipo == "LEY":

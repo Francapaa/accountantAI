@@ -66,3 +66,25 @@ def test_parse_html_keeps_content_inside_aspnet_form():
     assert "Libro de IVA Digital" in text
     assert "VIEWSTATE" not in text
     assert "xyz" not in text
+
+
+def test_parse_html_infoleg_resultados_layout():
+    # InfoLEG wraps the norm in <div id="resultados"> with no semantic
+    # containers; the branding header and footer must be dropped.
+    html = (
+        "<html><head><meta charset='ISO-8859-1'></head><body>"
+        '<header id="branding" role="banner"><div id="encabezado_norma">'
+        '<img src="left.png" usemap="#Map" />Infoleg</div></header>'
+        '<div id="resultados"><div id="resultados">'
+        '<p align="justify">ARTICULO 1º - Interpretación de las leyes impositivas.</p>'
+        '<p align="justify">La AFIP ejercerá sus facultades.</p>'
+        "</div></div>"
+        '<div id="footer"><ul><li>Copyright 2005 Ministerio de Justicia</li></ul></div>'
+        "</body></html>"
+    ).encode("latin-1")
+    text = parse_html(html)
+    assert "ARTICULO 1º" in text
+    assert "AFIP ejercerá" in text
+    assert "Copyright" not in text
+    assert "Infoleg" not in text
+    assert "branding" not in text

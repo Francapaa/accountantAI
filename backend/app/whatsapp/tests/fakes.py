@@ -21,6 +21,7 @@ class _Builder:
         self._order: str | None = None
         self._do_delete = False
         self._insert_row: dict[str, Any] | None = None
+        self._update_row: dict[str, Any] | None = None
 
     def select(self, *cols: str) -> "_Builder":
         joined = [c for col in cols for c in col.split(",")]
@@ -43,6 +44,10 @@ class _Builder:
         self._insert_row = row
         return self
 
+    def update(self, row: dict[str, Any]) -> "_Builder":
+        self._update_row = row
+        return self
+
     def delete(self) -> "_Builder":
         self._do_delete = True
         return self
@@ -50,6 +55,8 @@ class _Builder:
     def execute(self) -> FakeResult:
         if self._insert_row is not None:
             return self._fake._insert(self._name, self._insert_row)
+        if self._update_row is not None:
+            return self._fake._update(self._name, self._filters, self._update_row)
         if self._do_delete:
             return self._fake._delete(self._name, self._filters)
         return self._fake._select(
@@ -102,6 +109,14 @@ class FakeSupabase:
                 kept.append(r)
         self.tables[name] = kept
         return FakeResult(deleted)
+
+    def _update(self, name: str, filters, row: dict[str, Any]) -> FakeResult:
+        updated: list[dict[str, Any]] = []
+        for r in self.tables[name]:
+            if self._matches(r, filters):
+                r.update(row)
+                updated.append(dict(r))
+        return FakeResult(updated)
 
     def _insert(self, name: str, row: dict[str, Any]) -> FakeResult:
         new_row = dict(row)

@@ -28,6 +28,7 @@ The migrations are **idempotent**: re-running them is safe (`IF NOT EXISTS`,
 | `0010_storage.sql` | `documents.storage_path` column + private `normativa` Storage bucket |
 | `0011_match_documents.sql` | `match_documents` vector search function (RAG retrieval) |
 | `0012_whatsapp.sql` | `whatsapp_connections` + `clients.phone` + WhatsApp transport fields on `messages` |
+| `0013_whatsapp_reply_to.sql` | `messages.reply_to_message_id` (draft → inbound link) |
 
 ## Notes
 

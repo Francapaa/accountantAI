@@ -64,3 +64,11 @@ class ProviderOutboundPayload(BaseModel):
     media: MediaInput | None = None
     template: TemplateRef | None = None
     reply_to_id: str | None = None
+
+
+class DraftCreate(BaseModel):
+    """Body for saving an outbound reply as a draft (nothing is sent)."""
+
+    conversation_id: str = Field(min_length=1)
+    text: str = Field(min_length=1, max_length=4096)
+    reply_to_message_id: str | None = None

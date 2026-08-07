@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.me import router as me_router
+from app.api.whatsapp import router as whatsapp_api_router
 from app.core.config import settings
 from app.whatsapp.webhook import router as whatsapp_webhook_router
 
@@ -29,4 +30,5 @@ def response() -> dict[str, str]:
     return {"status": "ok", "message": "FUNCA PAAA"}
 
 app.include_router(me_router)
+app.include_router(whatsapp_api_router)
 app.include_router(whatsapp_webhook_router)

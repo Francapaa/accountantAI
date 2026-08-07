@@ -27,6 +27,7 @@ The migrations are **idempotent**: re-running them is safe (`IF NOT EXISTS`,
 | `0009_indexes_rls.sql` | Indexes (HNSW) + Row-Level Security policies + grants |
 | `0010_storage.sql` | `documents.storage_path` column + private `normativa` Storage bucket |
 | `0011_match_documents.sql` | `match_documents` vector search function (RAG retrieval) |
+| `0012_whatsapp.sql` | `whatsapp_connections` + `clients.phone` + WhatsApp transport fields on `messages` |
 
 ## Notes
 

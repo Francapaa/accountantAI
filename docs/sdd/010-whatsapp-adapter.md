@@ -26,6 +26,20 @@ and can migrate (e.g. to a controlled Baileys pilot) without rewriting the chat.
 - Audio transcription and media download — Phase 2.
 - Per-message cost / billing metrics — Phase 3.
 - Unofficial (Baileys) provider — documented for a controlled pilot only, not implemented.
+- AI-generated draft replies (no RAG yet): the "draft" the accountant approves is authored by the accountant in the app.
+
+## Multi-tenancy
+
+The platform is used by many accountants. Model: **one platform Meta App + one platform
+WABA (Model A)** shared by all accountants. Global secrets (`WHATSAPP_ACCESS_TOKEN`,
+`WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_BUSINESS_ACCOUNT_ID`) live in
+the backend `.env`. Each accountant links their own number in `whatsapp_connections`
+(`waba_id`, `phone_number_id`, `phone_number`); inbound events are routed to the owner via
+`metadata.phone_number_id`.
+
+This avoids storing per-account secrets and the webhook chicken-and-egg problem (the
+`X-Hub-Signature-256` must be verified with the app secret of the App that received the
+event — a single shared App keeps one secret).
 
 ## Technical Decisions
 
@@ -49,7 +63,10 @@ backend/app/
 │   ├── provider.py      # IWhatsAppProvider (Protocol)
 │   ├── meta.py          # MetaCloudApiProvider
 │   ├── webhook.py       # FastAPI router: GET challenge + POST events
+│   ├── service.py       # routing (phone_number_id → owner) + persistence + dedup
 │   └── schemas.py       # ProviderInboundMessage / ProviderOutboundPayload / MediaInput / TemplateRef
+├── api/
+│   └── whatsapp.py      # /api/whatsapp/connections + /api/whatsapp/messages (authenticated)
 └── core/
     └── config.py        # + whatsapp_* settings
 ```
@@ -105,31 +122,37 @@ class ProviderOutboundPayload:
     reply_to_id: str | None
 ```
 
-### Storage impact (to be mirrored in [009](./009-database-schema.md))
+### Storage impact (mirrored in [009](./009-database-schema.md) + migration `0012`)
 
-- `whatsapp_connections` — per account: `waba_id`, `phone_number_id`, secrets reference, provider.
-- `messages` gains `provider` and `provider_message_id` (unique per account) for idempotency.
-- Optional `conversation_windows` (per account/wa_id) caching open/closed 24h state.
+- `whatsapp_connections` — per account: `waba_id`, `phone_number_id`, `phone_number`,
+  `status`, `provider`. RLS owner-only.
+- `clients.phone` — E.164-ish number of the client's WhatsApp, used to match inbound
+  `wa_id` → workspace.
+- `messages` gains `provider`, `provider_message_id` (partial unique index → dedup),
+  `direction` (`inbound`/`outbound`) and `status` (`received`/`draft`/`sent`/`failed`).
 
-The adapter persists normalized messages; the stored domain model in **it** remains the author of
+The adapter persists normalized messages; the stored domain model remains the author of
 record.
 
 ## API (backend)
 
 - `GET  /api/whatsapp/webhook`  — challenge (subscription verification for Meta).
-- `POST /api/whatsapp/webhook`    — inbound events (HMAC signature verified).
-- `POST /api/whatsapp/messages`  — internal/authenticated; called by the approval flow to send.
+- `POST /api/whatsapp/webhook`    — inbound events (HMAC signature verified, deduped, routed to owner by `phone_number_id`, persisted).
+- `GET  /api/whatsapp/connections`        — list the accountant's WhatsApp connections.
+- `POST /api/whatsapp/connections`        — link a number (`waba_id`, `phone`, `phone_number_id`).
+- `DELETE /api/whatsapp/connections/{id}` — unlink a number.
+- `POST /api/whatsapp/messages`  — approve & send a reply to a client (uses the accountant's `phone_number_id`).
 
-The webhook is public (unauthenticated) but signature/token verified; sending is internal
-(service auth). All webhook signatures validated on the raw body.
+The webhook is public (unauthenticated) but signature/token verified; connection/send endpoints are authenticated (Supabase JWT). All webhook signatures validated on the raw body.
 
 ### Settings (new vars in `.env`)
 
 ```
-WHATSAPP_VERIFY_TOKEN=...
-WHATSAPP_ACCESS_TOKEN=...
-WHATSAPP_PHONE_NUMBER_ID=...
-WHATSAPP_APP_SECRET=...          # for X-Hub-Signature-256
+WHATSAPP_VERIFY_TOKEN=...       # global — you choose; used in webhook GET challenge
+WHATSAPP_ACCESS_TOKEN=...       # global — system-user token with access to the platform WABA
+WHATSAPP_APP_SECRET=...         # global — Meta App secret, for X-Hub-Signature-256
+WHATSAPP_BUSINESS_ACCOUNT_ID=...  # global — platform WABA id
+WHATSAPP_PHONE_NUMBER_ID=...      # global default/test number; accountants link their own later
 ```
 
 ## Workflows (given / when / then)
@@ -140,11 +163,13 @@ WHATSAPP_APP_SECRET=...          # for X-Hub-Signature-256
 
 **Given** Meta sends an inbound message (POST, valid HMAC signature),
 **when** it reaches the endpoint,
-**then** it is normalized to `ProviderInboundMessage`, mapped to a client/conversation, persisted
-(dedup on `provider_message_id`) and forwarded to the chat/RAG pipeline.
+**then** `metadata.phone_number_id` maps the message to the owning `whatsapp_connections`
+accountant; `wa_id` maps to a client (`clients.phone`), creating a placeholder workspace if
+unknown; the message is persisted (`direction='inbound'`, `status='received'`) with dedup on
+`provider_message_id` and forwarded to the approval flow.
 
 **Given** the accountant approves a draft for a client,
-**when** the backend calls the provider,
+**when** the backend calls the provider (`POST /api/whatsapp/messages`),
 **then** the 24h window is evaluated:
 - open → `send_message` (free-form, free);
 - closed → template (approved template required).
@@ -160,21 +185,23 @@ state are stored so delivered/read acknowledgements can update the transport sta
 
 1. A webhook subscribes successfully after a verification GET (challenge echo).
 2. POSTs are validated by `X-Hub-Signature-256`; invalid requests are rejected.
-3. An inbound message normalizes to `ProviderInboundMessage`, is persisted, and does not
-   duplicate on retry.
+3. An inbound message is routed to its owner via `phone_number_id`, matched to a client by
+   phone, persisted (`direction='inbound'`, `status='received'`) and does not duplicate on retry.
 4. Within the window, replies use free-form; outside, a template reference is used.
-5. A send receives and persists the Meta `provider_message_id`.
-6. The core depends on `IWhatsAppProvider`, not the Meta library.
+5. An accountant can link/unlink a number (`whatsapp_connections`) and list their connections.
+6. A send (`POST /api/whatsapp/messages`) persists the Meta `provider_message_id` as `sent`.
+7. The core depends on `IWhatsAppProvider`, not the Meta library.
 
 ## Open Questions
 
 - Approval channel to the accountant (WhatsApp-to-accountant vs email) — product decision.
 - Media download / audio transcription — Phase 2.
-- Dedicated number: new number vs re-registering the accountant's existing number (affects
-  existing history) — product decision.
+- Unknown sender handling: currently a placeholder client is created named with the phone;
+  auto-grouping/suggested assignment — product decision.
 
 ## Changelog
 
 | Date | Change |
 |---|---|
+| 2026-08-07 | Multi-tenant Model A (shared platform App/WABA, per-account `whatsapp_connections`); webhook routes by `phone_number_id`, matches `clients.phone`, persists with dedup; connection endpoints (`GET/POST/DELETE`) + send endpoint; migration `0012`. |
 | 2026-08-05 | Spec created: `IWhatsAppProvider` + Meta Cloud API (direct, no BSP) transport, HMAC-verified webhook, 24h window handling, idempotent ingestion. |

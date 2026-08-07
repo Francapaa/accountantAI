@@ -102,9 +102,12 @@ class MetaCloudApiProvider:
                 if value.get("messaging_product") != "whatsapp":
                     continue
                 from_number = value.get("metadata", {}).get("display_phone_number", "")
+                phone_number_id = value.get("metadata", {}).get("phone_number_id")
                 for msg in value.get("messages", []):
                     parsed = self._parse_single_message(
-                        msg, from_number=from_number
+                        msg,
+                        from_number=from_number,
+                        phone_number_id=phone_number_id,
                     )
                     if parsed is not None:
                         messages.append(parsed)
@@ -112,7 +115,7 @@ class MetaCloudApiProvider:
 
     @staticmethod
     def _parse_single_message(
-        msg: dict[str, Any], *, from_number: str
+        msg: dict[str, Any], *, from_number: str, phone_number_id: str | None = None
     ) -> ProviderInboundMessage | None:
         provider_message_id = msg.get("id")
         wa_id = msg.get("from")
@@ -135,12 +138,21 @@ class MetaCloudApiProvider:
                 filename=media_data.get("filename"),
             )
 
+        timestamp = datetime.now()
+        try:
+            raw_ts = int(msg.get("timestamp", "0"))
+            if raw_ts > 0:
+                timestamp = datetime.fromtimestamp(raw_ts)
+        except (ValueError, TypeError, OSError):
+            pass
+
         return ProviderInboundMessage(
             provider="meta",
             provider_message_id=provider_message_id,
             wa_id=wa_id,
             from_number=from_number,
-            timestamp=datetime.now(),
+            phone_number_id=phone_number_id,
+            timestamp=timestamp,
             text=text,
             media=media,
             reply_to_id=msg.get("context", {}).get("id"),

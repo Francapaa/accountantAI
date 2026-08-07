@@ -16,8 +16,13 @@ class Settings(BaseSettings):
 
     whatsapp_verify_token: str = ""
     whatsapp_access_token: str = ""
-    whatsapp_phone_number_id: str = ""
     whatsapp_app_secret: str = ""
+
+    # Single platform WABA (Model A): one Meta App + WABA shared by all
+    # accountants. `whatsapp_phone_number_id` is a default; accountants link
+    # their own numbers in `whatsapp_connections`.
+    whatsapp_business_account_id: str = ""
+    whatsapp_phone_number_id: str = ""
 
     cors_origins: list[str] = ["http://localhost:3000"]
 

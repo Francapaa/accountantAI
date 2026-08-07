@@ -13,7 +13,9 @@ from typing import Any
 from fastapi import APIRouter, Header, HTTPException, Request, status
 
 from app.core.config import settings
+from app.core.db import get_supabase_client
 from app.whatsapp.meta import MetaCloudApiProvider, MetaWebhookSignatureError
+from app.whatsapp.service import ingest_inbound
 
 router = APIRouter()
 
@@ -40,7 +42,7 @@ def verify_webhook(
 async def receive_events(
     request: Request,
     x_hub_signature_256: str | None = Header(default=None),
-) -> dict[str, str]:
+) -> dict[str, str | int]:
     """Ingest WhatsApp events, verified against the app secret."""
     raw_body = await request.body()
     if not x_hub_signature_256:
@@ -59,6 +61,11 @@ async def receive_events(
 
     payload = await request.json()
     messages = provider.parse_inbound(payload)
-    # TODO: persist messages (dedup by provider_message_id) and forward to the
-    # chat/RAG pipeline. See docs/sdd/010-whatsapp-adapter.md workflows.
-    return {"status": "received", "messages": len(messages)}
+
+    supabase = get_supabase_client()
+    persisted = 0
+    for message in messages:
+        if ingest_inbound(supabase, message):
+            persisted += 1
+
+    return {"status": "received", "messages": len(messages), "persisted": persisted}

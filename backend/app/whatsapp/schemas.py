@@ -49,6 +49,7 @@ class ProviderInboundMessage(BaseModel):
     provider_message_id: str
     wa_id: str
     from_number: str
+    phone_number_id: str | None = None
     timestamp: datetime
     text: str | None = None
     media: MediaInfo | None = None

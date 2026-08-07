@@ -32,30 +32,42 @@ navigation into each client's workspace (chat). It is the "command center" of th
 ## Frontend Structure (Scream Architecture)
 
 ```
-frontend/app/
-├── layout.tsx               # app shell: sidebar + auth guard
-├── home/
-│   ├── page.tsx             # SSR, fetches clients (server)
-│   ├── actions.ts           # server actions (createClient, etc.)
-│   └── components/
-│       ├── ClientList.tsx   # 'use client' (search/filter)
-│       ├── ClientRow.tsx
-│       ├── NewClientModal.tsx
-│       └── index.ts
-└── (shared) lib/components/ui/   # Button, Input, Card, Modal
+frontend/app/(app)/
+├── layout.tsx                # SSR app shell: auth guard + clients → <AppShell>
+├── actions.ts                # server actions (createClient) — owned by the shared shell
+├── schema.ts                 # zod validation for createClient
+├── components/               # shared app shell
+│   ├── AppShell.tsx          # 'use client' — top bar (hamburger + logo + sign out)
+│   ├── SidebarDrawer.tsx     # 'use client' — slide-in drawer: spaces list + "Nuevo espacio"
+│   ├── NewSpaceProvider.tsx  # 'use client' — context; single modal shared by drawer + grid
+│   ├── NewSpaceModal.tsx     # 'use client' — base-ui Dialog (focus trap, a11y)
+│   ├── NewSpaceForm.tsx      # 'use client' — useActionState(createClient) + context fields
+│   └── index.ts
+└── home/
+    ├── page.tsx              # SSR, fetches clients (server) → <ClientGrid>
+    └── components/
+        ├── ClientGrid.tsx    # 'use client' (greeting, search/filter, empty state)
+        ├── ClientCard.tsx    # 'use client' — client card → /clients/[id]
+        └── index.ts
 ```
 
-The sidebar lists the current accountant's name and top-level navigation (Home, Clients,
-Settings placeholder).
+Shared data access (`Client` type + `getClients()`) lives in `lib/clients.ts`; reusable UI in
+`lib/components/ui/`.
+
+The sidebar lists the current accountant's spaces (client chats) and provides the entry point to
+create new ones. It is part of the `(app)` layout shell so it stays consistent across home and
+future client pages.
 
 ## API / Server Actions
 
 - `GET /api/clients` (server-side) → list of clients for the current accountant.
-- Server action `createClient(input)` → create a new client workspace → redirect to it.
-- Server action `getClients()` used inside `page.tsx`.
+- Server action `createClient(input)` → create a new client workspace.
+- Server action `getClients()` used inside `page.tsx` and the app layout (shared shell).
 
-> Endpoint details for `clients` CRUD are defined in [004-clients](./004-clients.md); this page
-> **reads** that data.
+> In the MVP the frontend reads `clients` directly through the Supabase server client (RLS
+> scopes rows to `auth.uid()`); the backend `GET /api/clients` endpoint is optional. Endpoint
+> details for `clients` CRUD are defined in [004-clients](./004-clients.md); this page **reads**
+> that data.
 
 ## Workflows
 
@@ -63,7 +75,7 @@ Settings placeholder).
 list of **their** clients.
 
 **Given** the accountant, **when** they create a new client, **then** a client workspace is
-created and they navigate to it.
+created and the list (drawer + grid) refreshes.
 
 **Given** the accountant, **when** they click an existing client, **then** they navigate to the
 client's chat workspace.
@@ -77,9 +89,9 @@ sign-in (see [002](./002-login-auth.md)).
 
 1. `/` (home) requires authentication and shows only the current accountant's clients.
 2. The client list is searchable by name without full reload.
-3. Creating a client navigates to the new client workspace.
+3. Creating a client adds a new workspace; the list refreshes.
 4. Clicking a client navigates to its chat.
-5. The shared shell (sidebar) is consistent across home and client pages.
+5. The shared shell (drawer sidebar) is consistent across home and client pages.
 6. Scream architecture followed: SSR `page.tsx`, page-scoped `components/`, `actions.ts`.
 
 ## Open Questions
@@ -92,3 +104,4 @@ sign-in (see [002](./002-login-auth.md)).
 | Date | Change |
 |---|---|
 | 2026-08-04 | Home/dashboard spec created. |
+| 2026-08-06 | Implemented shared drawer shell in `(app)/layout.tsx` (hamburger → spaces + create). `createClient` moved to `(app)/actions.ts`; clients read via Supabase server client (RLS) with `lib/clients.ts`. |

@@ -1,7 +1,8 @@
-"""Authenticated WhatsApp API endpoints: per-account connections + message send.
+"""Authenticated WhatsApp API endpoints: per-account connections + draft/approve flow.
 
 These are *our* endpoints (not the Meta WhatsApp API): they let an accountant link or
-unlink their WhatsApp Business number and send/approve a reply to a client. See
+unlink their WhatsApp Business number and run the capture → draft → **approve** flow. The
+reply is never sent to Meta unless the accountant explicitly approves the draft. See
 docs/sdd/010-whatsapp-adapter.md.
 """
 
@@ -15,7 +16,7 @@ from pydantic import BaseModel, Field
 from app.api.auth import CurrentUser, get_current_user
 from app.core.db import get_supabase_client
 from app.whatsapp.meta import MetaCloudApiProvider
-from app.whatsapp.schemas import ProviderOutboundPayload
+from app.whatsapp.schemas import DraftCreate, ProviderOutboundPayload
 from app.whatsapp.service import normalize_phone
 
 router = APIRouter()
@@ -27,11 +28,6 @@ class ConnectionCreate(BaseModel):
     phone_number_id: str = Field(min_length=1)
 
 
-class SendMessageIn(BaseModel):
-    conversation_id: str = Field(min_length=1)
-    text: str = Field(min_length=1)
-
-
 def _to_response(row: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": row["id"],
@@ -41,6 +37,23 @@ def _to_response(row: dict[str, Any]) -> dict[str, Any]:
         "phone_number_id": row["phone_number_id"],
         "status": row["status"],
     }
+
+
+def _conversation(supabase, conversation_id: str, user: CurrentUser) -> dict[str, Any]:
+    convo = (
+        supabase.table("conversations")
+        .select("id, client_id")
+        .eq("id", conversation_id)
+        .eq("owner_id", user.id)
+        .limit(1)
+        .execute()
+    )
+    if not convo.data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Conversación no encontrada.",
+        )
+    return convo.data[0]
 
 
 @router.get("/api/whatsapp/connections")
@@ -108,32 +121,72 @@ def delete_connection(
     return {"status": "deleted"}
 
 
-@router.post("/api/whatsapp/messages")
-async def send_message(
-    payload: SendMessageIn,
+@router.post("/api/whatsapp/drafts", status_code=status.HTTP_201_CREATED)
+def save_draft(
+    payload: DraftCreate,
+    user: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Persists an outbound reply as a draft. Nothing is sent to WhatsApp."""
+    supabase = get_supabase_client()
+    _conversation(supabase, payload.conversation_id, user)
+
+    res = (
+        supabase.table("messages")
+        .insert(
+            {
+                "conversation_id": payload.conversation_id,
+                "role": "assistant",
+                "content": payload.text,
+                "provider": "meta",
+                "direction": "outbound",
+                "status": "draft",
+                "reply_to_message_id": payload.reply_to_message_id,
+            }
+        )
+        .execute()
+    )
+    if not res.data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No se pudo guardar el borrador.",
+        )
+    row = res.data[0]
+    return {"id": row["id"], "conversation_id": row["conversation_id"], "status": "draft"}
+
+
+@router.post("/api/whatsapp/drafts/{draft_id}/approve")
+async def approve_draft(
+    draft_id: str,
     user: CurrentUser = Depends(get_current_user),
 ) -> dict[str, str]:
-    """Approves and sends a reply to a client's conversation via WhatsApp."""
+    """Approves and sends a saved draft to the client via WhatsApp.
+
+    This is the explicit acceptance step: only this endpoint calls the provider.
+    """
     supabase = get_supabase_client()
 
-    convo = (
-        supabase.table("conversations")
-        .select("id, client_id")
-        .eq("id", payload.conversation_id)
-        .eq("owner_id", user.id)
+    draft = (
+        supabase.table("messages")
+        .select("*")
+        .eq("id", draft_id)
+        .eq("direction", "outbound")
+        .eq("status", "draft")
         .limit(1)
         .execute()
     )
-    if not convo.data:
+    if not draft.data:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Conversación no encontrada.",
+            detail="Borrador no encontrado.",
         )
+    draft_row = draft.data[0]
+
+    convo = _conversation(supabase, draft_row["conversation_id"], user)
 
     client = (
         supabase.table("clients")
         .select("id, phone")
-        .eq("id", convo.data[0]["client_id"])
+        .eq("id", convo["client_id"])
         .limit(1)
         .execute()
     )
@@ -161,26 +214,20 @@ async def send_message(
     provider = MetaCloudApiProvider()
     try:
         provider_message_id = await provider.send_message(
-            ProviderOutboundPayload(to=normalize_phone(client_phone), text=payload.text),
+            ProviderOutboundPayload(to=normalize_phone(client_phone), text=draft_row["content"]),
             phone_number_id=conn["phone_number_id"],
         )
     finally:
         await provider.aclose()
 
-    res = (
-        supabase.table("messages")
-        .insert(
-            {
-                "conversation_id": payload.conversation_id,
-                "role": "assistant",
-                "content": payload.text,
-                "provider": "meta",
-                "provider_message_id": provider_message_id,
-                "direction": "outbound",
-                "status": "sent",
-            }
-        )
-        .execute()
-    )
+    supabase.table("messages").update(
+        {"status": "sent", "provider_message_id": provider_message_id}
+    ).eq("id", draft_id).execute()
 
-    return {"status": "sent", "message_id": res.data[0]["id"] if res.data else ""}
+    reply_to = draft_row.get("reply_to_message_id")
+    if reply_to:
+        supabase.table("messages").update({"status": "sent"}).eq(
+            "id", reply_to
+        ).execute()
+
+    return {"status": "sent", "message_id": draft_id}

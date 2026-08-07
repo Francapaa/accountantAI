@@ -7,16 +7,26 @@ import { Button } from "@/lib/components/ui/button";
 import { Input } from "@/lib/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Client } from "@/lib/clients";
+import type { InboxMessage, WhatsAppConnection } from "@/lib/whatsapp";
 import { useNewSpace } from "@/app/(app)/components/NewSpaceProvider";
 
-import { ClientCard } from "./ClientCard";
+import { ClientCard, WhatsAppConnectionCard, WhatsAppInbox } from "./";
 
 type ClientGridProps = {
   userName?: string;
   clients: Client[];
+  whatsappConnections?: WhatsAppConnection[];
+  whatsappInbox?: InboxMessage[];
+  webhookUrl?: string;
 };
 
-export function ClientGrid({ userName, clients }: ClientGridProps) {
+export function ClientGrid({
+  userName,
+  clients,
+  whatsappConnections = [],
+  whatsappInbox = [],
+  webhookUrl = "",
+}: ClientGridProps) {
   const [query, setQuery] = useState("");
   const { openNewSpace } = useNewSpace();
 
@@ -37,6 +47,11 @@ export function ClientGrid({ userName, clients }: ClientGridProps) {
           Elegí un cliente para abrir su chat o creá un espacio nuevo para
           empezar a trabajar.
         </p>
+      </div>
+
+      <div className="animate-fade-in mt-6 space-y-4" style={{ animationDelay: "60ms" }}>
+        <WhatsAppConnectionCard connections={whatsappConnections} webhookUrl={webhookUrl} />
+        <WhatsAppInbox messages={whatsappInbox} />
       </div>
 
       {clients.length > 0 ? (

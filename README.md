@@ -178,8 +178,9 @@ accountantAI/
 │       ├── rag/         # embedding + retrieval + prompt
 │       ├── ingestion/   # scraper + parser + chunker
 │       └── scheduler/   # nightly cron
+├── load-tests/          # performance tests (k6 + TypeScript), smoke/load
 ├── supabase/            # SQL migrations (schema, pgvector, RLS)
-└── docs/sdd/            # specifications (Spec-Driven Development)
+└── docs/                # specifications (Spec-Driven Development)
 ```
 
 ## Running the project
@@ -241,6 +242,21 @@ Run the tests:
 ```bash
 uv run python -m pytest app/ingestion/tests
 ```
+
+### Performance testing
+
+Backend performance/smoke tests live in [`load-tests/`](./load-tests/README.md)
+(k6 + TypeScript, bundled with esbuild). With the backend running:
+
+```bash
+cd load-tests
+npm install
+npm run smoke        # 1 VU per endpoint — validates access/auth/schema
+npm run load         # ramping-VUs load with latency/error thresholds
+```
+
+Read `load-tests/.env.example` for the required env vars (e.g. `SUPABASE_JWT_SECRET`
+to sign test JWTs). CI typechecks and bundles the suite on every PR.
 
 ### Environment variables
 

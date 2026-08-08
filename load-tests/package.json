@@ -1,0 +1,29 @@
+{
+  "name": "accountantai-load-tests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "k6 load and smoke tests (TypeScript) for the AccountantAI backend",
+  "scripts": {
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "setup": "node -e \"const f=require('fs'),p='.env';if(!f.existsSync(p)){f.copyFileSync('.env.example',p);console.log('created .env from .env.example — fill it in')}else{console.log('.env already exists')}\"",
+    "smoke": "npm run build && node run.mjs dist/smoke",
+    "load": "npm run build && node run.mjs dist/load",
+    "smoke:health": "npm run build && node run.mjs dist/smoke/health.smoke.test.js",
+    "smoke:me": "npm run build && node run.mjs dist/smoke/me.smoke.test.js",
+    "smoke:connections": "npm run build && node run.mjs dist/smoke/connections.smoke.test.js",
+    "smoke:drafts": "npm run build && node run.mjs dist/smoke/drafts.smoke.test.js",
+    "smoke:webhook": "npm run build && node run.mjs dist/smoke/webhook.smoke.test.js",
+    "smoke:approve": "npm run build && node run.mjs dist/smoke/approve.opt.smoke.test.js",
+    "load:health": "npm run build && node run.mjs dist/load/health.load.test.js",
+    "load:me": "npm run build && node run.mjs dist/load/me.load.test.js",
+    "load:connections": "npm run build && node run.mjs dist/load/connections.load.test.js",
+    "load:webhook": "npm run build && node run.mjs dist/load/webhook.load.test.js"
+  },
+  "devDependencies": {
+    "@types/k6": "^0.54.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.8.0"
+  }
+}

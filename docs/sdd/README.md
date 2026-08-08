@@ -23,6 +23,7 @@ Purposes:
 | 8  | [008-cron-sync](./008-cron-sync.md)                      | Nightly incremental sync with hash checks                    |
 | 9  | [009-database-schema](./009-database-schema.md)          | Full PostgreSQL/pgvector schema + indexes + RLS policies     |
 | 10 | [010-whatsapp-adapter](./010-whatsapp-adapter.md)        | WhatsApp transport: Meta Cloud API provider abstraction       |
+| 11 | [011-performance-tests](./011-performance-tests.md)      | Performance testing: k6 + TypeScript, smoke/load coverage     |
 
 ## Roadmap
 

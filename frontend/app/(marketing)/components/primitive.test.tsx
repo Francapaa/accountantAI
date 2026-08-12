@@ -29,8 +29,8 @@ describe("Marquee", () => {
     ).toBeInTheDocument();
   });
 
-  it("duplica los items para el bucle continuo", () => {
+  it("duplica la fila para el bucle continuo", () => {
     render(<Marquee items={items} />);
-    expect(screen.getAllByText("¿Ya puedo facturar?")).toHaveLength(4);
+    expect(screen.getAllByText("¿Ya puedo facturar?")).toHaveLength(2);
   });
 });

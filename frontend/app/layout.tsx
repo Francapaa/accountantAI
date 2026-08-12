@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
+import { Geist_Mono, IBM_Plex_Sans, Inter } from "next/font/google";
 import { siteConfig } from "@/lib/config/site";
 import { Analytics } from "@/lib/components/analytics";
 import { WebVitals } from "@/lib/components/web-vitals";
@@ -15,7 +15,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
+const ibmPlexSans = IBM_Plex_Sans({
+  weight: ["400", "500", "600", "700"],
+  style: ["normal"],
   variable: "--font-display",
   subsets: ["latin"],
 });
@@ -70,7 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es-AR"
-      className={`${inter.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      className={`${inter.variable} ${geistMono.variable} ${ibmPlexSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
         {process.env.NEXT_PUBLIC_SUPABASE_URL ? (

@@ -8,6 +8,7 @@ import {
   Header,
   Hero,
   HowItWorks,
+  PinHighlights,
   Problem,
   StructuredData,
 } from "./components";
@@ -35,6 +36,7 @@ export default function LandingPage() {
       <Header />
       <main id="contenido">
         <Hero />
+        <PinHighlights />
         <Problem />
         <Features />
         <HowItWorks />

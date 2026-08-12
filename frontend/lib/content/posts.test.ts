@@ -75,4 +75,13 @@ describe("blog posts", () => {
       }
     }
   });
+
+  it("las FAQs tienen question y answer no vacíos", () => {
+    for (const post of posts) {
+      for (const item of post.faq ?? []) {
+        expect(item.question.length).toBeGreaterThan(0);
+        expect(item.answer.length).toBeGreaterThan(0);
+      }
+    }
+  });
 });

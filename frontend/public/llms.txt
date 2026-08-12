@@ -9,7 +9,8 @@
 
 ## Company
 
-- [Acerca de AccountantAI](https://accountantai.com/): asistente de IA para estudios contables de Argentina. RAG sobre normativa ARCA/AFIP.
+- [Acerca de AccountantAI](https://accountantai.com/acerca): asistente de IA para estudios contables de Argentina. RAG sobre normativa ARCA/AFIP.
+- [Contacto](https://accountantai.com/contacto): email, soporte y demos para estudios contables.
 
 ## Important Page
 

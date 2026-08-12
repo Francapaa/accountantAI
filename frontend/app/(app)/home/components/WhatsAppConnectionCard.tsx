@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { MessageSquarePlus, Plus, ShieldCheck } from "lucide-react";
 
-import { Button } from "@/lib/components/ui/button";
 import { Badge } from "@/lib/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { WhatsAppConnection } from "@/lib/whatsapp";

@@ -104,6 +104,19 @@ export default async function PostPage({ params }: PageProps) {
     .map((relatedSlug) => getPost(relatedSlug))
     .filter((related): related is BlogPost => Boolean(related));
 
+  const faqJsonLd =
+    post.faq && post.faq.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: post.faq.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: { "@type": "Answer", text: item.answer },
+          })),
+        }
+      : null;
+
   return (
     <div className="min-h-dvh bg-background">
       <header className="border-b border-border/60">
@@ -178,6 +191,23 @@ export default async function PostPage({ params }: PageProps) {
             </section>
           ))}
         </div>
+        {post.faq && post.faq.length > 0 && (
+          <section className="mt-12 border-t border-border/60 pt-8">
+            <h2 className="font-heading text-xl font-semibold">
+              Preguntas frecuentes de este artículo
+            </h2>
+            <dl className="mt-4 space-y-6">
+              {post.faq.map((item) => (
+                <div key={item.question}>
+                  <dt className="font-medium text-foreground">{item.question}</dt>
+                  <dd className="mt-1 leading-relaxed text-muted-foreground">
+                    {item.answer}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
         {post.sources && post.sources.length > 0 && (
           <section className="mt-12 border-t border-border/60 pt-8">
             <h2 className="font-heading text-xl font-semibold">Fuentes</h2>
@@ -231,6 +261,14 @@ export default async function PostPage({ params }: PageProps) {
           __html: JSON.stringify(breadcrumbsJsonLd).replace(/</g, "\\u003c"),
         }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
     </div>
   );
 }

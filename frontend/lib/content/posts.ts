@@ -14,6 +14,11 @@ export type BlogSource = {
   url: string;
 };
 
+export type BlogFAQ = {
+  question: string;
+  answer: string;
+};
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -26,6 +31,7 @@ export type BlogPost = {
   sections: BlogSection[];
   sources?: BlogSource[];
   relatedSlugs?: string[];
+  faq?: BlogFAQ[];
 };
 
 export const blogPosts: BlogPost[] = [
@@ -45,6 +51,18 @@ export const blogPosts: BlogPost[] = [
       { label: "AFIP — Administración Federal de Ingresos Públicos", url: "https://www.argentina.gob.ar/afip" },
     ],
     relatedSlugs: ["como-verificar-respuestas-con-citas-normativa", "asistente-ia-vs-excel-vs-consultora"],
+    faq: [
+      {
+        question: "¿El modelo se puede inventar la normativa de ARCA/AFIP?",
+        answer:
+          "Sin acceso a los documentos sí, como cualquier chatbot. Por eso RAG busca primero la respuesta en la normativa oficial indexada y muestra la cita del fragmento usado, de modo que podés abrir la fuente y verificar el texto legal antes de usar la respuesta.",
+      },
+      {
+        question: "¿Qué diferencia hay entre un chatbot común y un asistente con RAG?",
+        answer:
+          "Un chatbot común responde de memoria y puede inventar citas. Un asistente con RAG recupera fragmentos de la normativa oficial y recién entonces redacta, mostrando la fuente de cada afirmación. La diferencia es auditabilidad: cada respuesta se puede rastrear al documento original.",
+      },
+    ],
     sections: [
       {
         body: [
@@ -86,6 +104,18 @@ export const blogPosts: BlogPost[] = [
     readingTime: "4 min",
     sources: [{ label: "ARCA — Agencia de Recaudación y Control Aduanero", url: "https://www.argentina.gob.ar/arca" }],
     relatedSlugs: ["que-es-rag-para-contadores"],
+    faq: [
+      {
+        question: "¿Cómo sé si puedo confiar en una respuesta de un asistente de IA?",
+        answer:
+          "Abrí la cita de la fuente, compará el fragmento citado con el texto original y validá que la normativa aplique al caso de tu cliente (régimen, provincia, vigencia). Ese flujo lleva menos de un minuto y convierte la respuesta en algo verificable.",
+      },
+      {
+        question: "¿Qué hago si una herramienta me responde sin citar ninguna fuente?",
+        answer:
+          "Tomala como borrador, no como conclusión. Una respuesta sin fuente no permite auditar su base legal, así que conviene verificarla manualmente o descartarla antes de compartirla con el cliente.",
+      },
+    ],
     sections: [
       {
         body: [
@@ -126,6 +156,18 @@ export const blogPosts: BlogPost[] = [
     readingTime: "5 min",
     sources: [{ label: "ARCA — Agencia de Recaudación y Control Aduanero", url: "https://www.argentina.gob.ar/arca" }],
     relatedSlugs: ["que-es-rag-para-contadores", "proceso-normativo-arca-aire-cuestionarios"],
+    faq: [
+      {
+        question: "¿Para qué consultas conviene cada herramienta?",
+        answer:
+          "La búsqueda manual sirve para consultas puntuales, el Excel propio para el conocimiento acumulado del estudio, la consultora para los casos complejos y la IA con RAG para las consultas repetitivas del día a día con respuesta citada a la normativa.",
+      },
+      {
+        question: "¿Un asistente de IA reemplaza al Excel o a la consultora?",
+        answer:
+          "No es excluyente. Lo práctico es combinar: la IA para la consulta repetitiva, el Excel para el conocimiento propio y la consultora para los casos límite. La decisión y la firma siguen siendo del contador.",
+      },
+    ],
     sections: [
       {
         body: [
@@ -227,6 +269,18 @@ export const blogPosts: BlogPost[] = [
       { label: "AFIP — Trámites y servicios electrónicos", url: "https://www.argentina.gob.ar/afip" },
     ],
     relatedSlugs: ["que-es-rag-para-contadores", "como-verificar-respuestas-con-citas-normativa"],
+    faq: [
+      {
+        question: "¿Qué tengo que hacer si me llega una notificación por AIRE?",
+        answer:
+          "Leé qué observación concreta hace el organismo y con qué período se relaciona, descartá las causas automatizadas que no apliquen y respondé dentro del plazo con la documentación que respalda la posición. El silencio se interpreta como allanamiento.",
+      },
+      {
+        question: "Si no abro la notificación de AIRE a tiempo, ¿desaparece?",
+        answer:
+          "No. El proceso continúa aunque no haya acuse de recibo a tiempo, y el contribuyente pierde oportunidades de descargo. Por eso es clave revisar AIRE con regularidad.",
+      },
+    ],
     sections: [
       {
         body: [
@@ -270,6 +324,18 @@ export const blogPosts: BlogPost[] = [
       { label: "ARCA — Agencia de Recaudación y Control Aduanero", url: "https://www.argentina.gob.ar/arca" },
     ],
     relatedSlugs: ["que-es-rag-para-contadores", "proceso-normativo-arca-aire-cuestionarios", "asistente-ia-vs-excel-vs-consultora"],
+    faq: [
+      {
+        question: "¿La IA generativa puede reemplazar a un contador?",
+        answer:
+          "No. La IA estructura respuestas y encuentra normativa, pero opinar sobre la norma, validar el alcance de cada regla y decidir por el cliente son trabajo del contador. La responsabilidad profesional no se delega.",
+      },
+      {
+        question: "¿Qué pasa si el modelo alucina un artículo de la normativa?",
+        answer:
+          "Con RAG y cita a la fuente esa alucinación se reduce, porque la respuesta se arma sobre fragmentos reales de la normativa. Aun así, el flujo de verificación —abrir la cita y comparar el texto— es innegociable antes de enviar.",
+      },
+    ],
     sections: [
       {
         body: [

@@ -39,7 +39,7 @@ export const faqItems = [
   {
     question: "¿Qué pasa con la privacidad de mis clientes?",
     answer:
-      "Todos los chats, mensajes y respuestas generadas por la IA se encuentran bajo encriptacion, nadie mas que el propio contador pueden acceder a ellas. ",
+      "Todos los chats, mensajes y respuestas generadas por la IA se encuentran bajo encriptacion, nadie mas que el propio contador pueden acceder a ellas.",
   },
 ] as const;
 

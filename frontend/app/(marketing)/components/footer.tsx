@@ -16,7 +16,11 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t py-10">
+    <footer className="relative border-t py-10">
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"
+      />
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 sm:px-6 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col items-center gap-3 md:items-start">
           <Logo />

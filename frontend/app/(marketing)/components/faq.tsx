@@ -8,6 +8,8 @@ import {
 
 import { SectionHeading } from "./section-heading";
 
+export const FAQ_TITLE = "Lo que querés saber antes de empezar";
+
 export const faqItems = [
   {
     question: "¿Qué es AccountantAI?",
@@ -37,7 +39,7 @@ export const faqItems = [
   {
     question: "¿Qué pasa con la privacidad de mis clientes?",
     answer:
-      "Cada contador accede únicamente a sus propios clientes y conversaciones. El acceso se protege con autenticación y permisos a nivel de fila en la base de datos.",
+      "Todos los chats, mensajes y respuestas generadas por la IA se encuentran bajo encriptacion, nadie mas que el propio contador pueden acceder a ellas. ",
   },
 ] as const;
 
@@ -48,7 +50,7 @@ export function Faq() {
         <Reveal>
           <SectionHeading
             eyebrow="Preguntas frecuentes"
-            title="Lo que querés saber antes de empezar"
+            title={FAQ_TITLE}
           />
         </Reveal>
         <Reveal delay={100}>

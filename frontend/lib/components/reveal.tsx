@@ -1,56 +1,86 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, type ElementType } from "react";
 
 import { cn } from "@/lib/utils";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 type RevealProps = {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  scrub?: boolean;
   as?: "div" | "section" | "li";
 };
 
 /**
- * Fades + rises content when it scrolls into view (once).
- * Respects prefers-reduced-motion via Tailwind's motion-reduce variants.
+ * Fades + rises content when it scrolls into view (once), powered by GSAP
+ * ScrollTrigger. When prefers-reduced-motion is requested the content stays
+ * visible without any tween.
+ *
+ * With `scrub`, the reveal is linked to scroll position instead: content
+ * ascends and fades in in proportion to the scroll, so it emerges from behind
+ * pinned sections.
  */
-export function Reveal({ children, className, delay = 0, as = "div" }: RevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+export function Reveal({ children, className, delay = 0, scrub = false, as = "div" }: RevealProps) {
+  const scope = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const el = ref.current;
+  useGSAP(() => {
+    const el = scope.current;
     if (!el) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" },
-    );
+    const mm = gsap.matchMedia();
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      if (scrub) {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 48 },
+          {
+            opacity: 1,
+            y: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 95%",
+              end: "top 40%",
+              scrub: true,
+            },
+          },
+        );
+        return;
+      }
 
-  const Tag = as;
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            once: true,
+          },
+        })
+        .fromTo(
+          el,
+          { opacity: 0, y: 12 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.45,
+            ease: "power2.out",
+            delay: delay / 1000,
+          },
+        );
+    });
+  }, { scope });
+
+  const Tag = as as ElementType;
 
   return (
-    <Tag
-      ref={ref as never}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
-      className={cn(
-        "transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none",
-        visible
-          ? "translate-y-0 opacity-100"
-          : "translate-y-4 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
-        className,
-      )}
-    >
+    <Tag ref={scope} className={cn(className)}>
       {children}
     </Tag>
   );

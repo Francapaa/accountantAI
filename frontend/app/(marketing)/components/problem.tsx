@@ -1,4 +1,8 @@
+import { MessageSquareWarning } from "lucide-react";
+
 import { Reveal } from "@/lib/components/reveal";
+
+import { Marquee } from "./marquee";
 
 const exampleQuestions = [
   "¿Ya puedo facturar?",
@@ -6,14 +10,21 @@ const exampleQuestions = [
   "¿Tengo que recategorizarme?",
   "¿Cómo hago una nota de crédito?",
   "¿Qué categoría me corresponde?",
-] as const;
+  "¿Puedo pagar con débito automático?",
+  "¿Qué vence esta semana?",
+  "¿Cómo declaro el IVA de servicios?",
+];
 
 export function Problem() {
   return (
-    <section className="border-y bg-muted/40 py-24">
+    <section
+      id="problema"
+      className="relative overflow-hidden border-y bg-muted/40 py-24"
+    >
       <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
-        <Reveal>
-          <p className="text-sm font-semibold tracking-wider text-primary uppercase">
+        <Reveal scrub>
+          <p className="flex items-center gap-2 text-sm font-semibold tracking-wider text-accent uppercase">
+            <MessageSquareWarning className="size-4" aria-hidden="true" />
             El problema
           </p>
           <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
@@ -30,31 +41,28 @@ export function Problem() {
             interpretarlas y aconsejar.
           </p>
         </Reveal>
-        <div>
-          <Reveal>
-            <p
-              id="consultas-tipicas"
-              className="mb-4 text-sm font-medium text-muted-foreground"
+
+        <Reveal scrub className="flex flex-col gap-4">
+          <div className="flex items-center gap-2 rounded-xl border border-border/70 bg-background px-4 py-3 shadow-sm">
+            <span
+              aria-hidden="true"
+              className="relative flex size-2 shrink-0"
             >
-              Consultas típicas de un día laboral:
+              <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-accent/60" />
+              <span className="relative inline-flex size-2 rounded-full bg-accent/80" />
+            </span>
+            <p className="text-sm font-medium text-muted-foreground">
+              Así suenan las consultas de un día laboral…
             </p>
-          </Reveal>
-          <ol aria-labelledby="consultas-tipicas" className="flex flex-col gap-3">
-            {exampleQuestions.map((question, i) => (
-              <li key={question}>
-                <Reveal
-                  delay={i * 70}
-                  className="flex items-center gap-3 rounded-xl border border-border/60 bg-background px-4 py-3 shadow-sm transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary ring-1 ring-primary/10">
-                    {i + 1}
-                  </span>
-                  <p className="font-medium">“{question}”</p>
-                </Reveal>
-              </li>
-            ))}
-          </ol>
-        </div>
+          </div>
+          <Marquee
+            ariaLabel="Consultas típicas de un estudio contable"
+            items={exampleQuestions.map((q, i) => ({ id: `q-${i}`, label: q }))}
+          />
+          <p className="text-center text-xs text-muted-foreground">
+            Y se repiten con cada cliente, todos los días.
+          </p>
+        </Reveal>
       </div>
     </section>
   );

@@ -12,7 +12,17 @@ type MarqueeProps = {
   ariaLabel?: string;
 };
 
-function Row({ items, itemClassName }: { items: MarqueeItem[]; itemClassName?: string }) {
+const COPIES = 2;
+
+function Row({
+  copy,
+  items,
+  itemClassName,
+}: {
+  copy: number;
+  items: MarqueeItem[];
+  itemClassName?: string;
+}) {
   return (
     <div
       aria-hidden="true"
@@ -20,7 +30,7 @@ function Row({ items, itemClassName }: { items: MarqueeItem[]; itemClassName?: s
     >
       {items.map((item) => (
         <span
-          key={item.id}
+          key={`${copy}-${item.id}`}
           className={cn(
             "flex items-center gap-2 whitespace-nowrap rounded-full border border-border/70 bg-background px-4 py-2 text-sm font-medium text-muted-foreground",
             itemClassName,
@@ -35,12 +45,11 @@ function Row({ items, itemClassName }: { items: MarqueeItem[]; itemClassName?: s
 }
 
 /**
- * Infinite horizontal marquee. Content is duplicated for a seamless loop;
- * pauses on hover and respects prefers-reduced-motion.
+ * Infinite horizontal marquee. Two identical rows are rendered for a seamless
+ * loop (the keyframe translates -50%); pauses on hover and respects
+ * prefers-reduced-motion.
  */
 export function Marquee({ items, className, itemClassName, ariaLabel }: MarqueeProps) {
-  const doubled = [...items, ...items];
-
   return (
     <div
       role={ariaLabel ? "marquee" : undefined}
@@ -52,8 +61,11 @@ export function Marquee({ items, className, itemClassName, ariaLabel }: MarqueeP
       )}
     >
       <div className="flex w-max animate-marquee motion-reduce:animate-none">
-        <Row items={doubled} itemClassName={itemClassName} />
-        {items.length > 0 ? <Row items={doubled} itemClassName={itemClassName} /> : null}
+        {items.length > 0
+          ? Array.from({ length: COPIES }, (_, copy) => (
+              <Row key={`copy-${copy}`} copy={copy} items={items} itemClassName={itemClassName} />
+            ))
+          : null}
       </div>
     </div>
   );

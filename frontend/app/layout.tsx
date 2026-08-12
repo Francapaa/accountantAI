@@ -74,11 +74,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
         {process.env.NEXT_PUBLIC_SUPABASE_URL ? (
-          <link
-            rel="preconnect"
-            href={process.env.NEXT_PUBLIC_SUPABASE_URL}
-            crossOrigin="anonymous"
-          />
+          <>
+            <link
+              rel="preconnect"
+              href={process.env.NEXT_PUBLIC_SUPABASE_URL}
+              crossOrigin="anonymous"
+            />
+            <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+          </>
         ) : null}
         <Analytics />
         <WebVitals />

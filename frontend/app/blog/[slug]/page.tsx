@@ -142,6 +142,39 @@ export default async function PostPage({ params }: PageProps) {
                   </p>
                 ))}
               </div>
+              {section.table && (
+                <div className="mt-6 overflow-x-auto">
+                  <table className="w-full border-collapse text-sm">
+                    <thead>
+                      <tr>
+                        {section.table.headers.map((header) => (
+                          <th
+                            key={header}
+                            scope="col"
+                            className="border-b-2 border-border bg-muted/40 px-4 py-3 text-left font-semibold text-foreground"
+                          >
+                            {header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {section.table.rows.map((row, r) => (
+                        <tr key={r} className="border-b border-border/60">
+                          {row.map((cell, c) => (
+                            <td
+                              key={c}
+                              className="px-4 py-3 align-top text-muted-foreground"
+                            >
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </section>
           ))}
         </div>

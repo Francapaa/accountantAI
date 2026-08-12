@@ -3,6 +3,11 @@ export type BlogSection = {
   body: string[];
 };
 
+export type BlogSource = {
+  label: string;
+  url: string;
+};
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -13,6 +18,8 @@ export type BlogPost = {
   authorPosition: string;
   readingTime: string;
   sections: BlogSection[];
+  sources?: BlogSource[];
+  relatedSlugs?: string[];
 };
 
 export const blogPosts: BlogPost[] = [
@@ -27,6 +34,11 @@ export const blogPosts: BlogPost[] = [
     author: "Equipo AccountantAI",
     authorPosition: "AccountantAI",
     readingTime: "6 min",
+    sources: [
+      { label: "ARCA — Agencia de Recaudación y Control Aduanero", url: "https://www.argentina.gob.ar/arca" },
+      { label: "AFIP — Administración Federal de Ingresos Públicos", url: "https://www.argentina.gob.ar/afip" },
+    ],
+    relatedSlugs: ["como-verificar-respuestas-con-citas-normativa", "asistente-ia-vs-excel-vs-consultora"],
     sections: [
       {
         body: [
@@ -66,6 +78,8 @@ export const blogPosts: BlogPost[] = [
     author: "Equipo AccountantAI",
     authorPosition: "AccountantAI",
     readingTime: "4 min",
+    sources: [{ label: "ARCA — Agencia de Recaudación y Control Aduanero", url: "https://www.argentina.gob.ar/arca" }],
+    relatedSlugs: ["que-es-rag-para-contadores"],
     sections: [
       {
         body: [
@@ -104,6 +118,8 @@ export const blogPosts: BlogPost[] = [
     author: "Equipo AccountantAI",
     authorPosition: "AccountantAI",
     readingTime: "5 min",
+    sources: [{ label: "ARCA — Agencia de Recaudación y Control Aduanero", url: "https://www.argentina.gob.ar/arca" }],
+    relatedSlugs: ["que-es-rag-para-contadores", "proceso-normativo-arca-aire-cuestionarios"],
     sections: [
       {
         body: [
@@ -132,6 +148,94 @@ export const blogPosts: BlogPost[] = [
         heading: "Asistente de IA con RAG",
         body: [
           "Devuelve en segundos una respuesta citada a la normativa indexada, actualizada automáticamente y con el contexto de cada cliente. La velocidad es su mayor ventaja; la verificación humana sigue siendo necesaria, igual que con el resto de las opciones. Se combina bien con una consultora para los casos límite.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "proceso-normativo-arca-aire-cuestionarios",
+    title:
+      "AIRE y cuestionarios de incumplimiento: cómo funciona el proceso normativo de ARCA/AFIP",
+    excerpt:
+      "Guía para entender qué es AIRE (Acuse de Recibo e Intercambio Electrónico de ARCA, ex AFIP), qué notificaciones llegan por ese canal y qué hacer cuando el organismo inicia un cuestionario por un posible incumplimiento.",
+    datePublished: "2026-08-11",
+    dateModified: "2026-08-11",
+    author: "Equipo AccountantAI",
+    authorPosition: "AccountantAI",
+    readingTime: "6 min",
+    sources: [
+      { label: "ARCA — Agencia de Recaudación y Control Aduanero", url: "https://www.argentina.gob.ar/arca" },
+      { label: "AFIP — Trámites y servicios electrónicos", url: "https://www.argentina.gob.ar/afip" },
+    ],
+    relatedSlugs: ["que-es-rag-para-contadores", "como-verificar-respuestas-con-citas-normativa"],
+    sections: [
+      {
+        body: [
+          "Cuando ARCA (ex AFIP) detecta una inconsistencia vinculada a un contribuyente, suele iniciar el proceso por el servicio AIRE: Acuse de Recibo e Intercambio Electrónico. Es el canal digital oficial por el que el organismo notifica requerimientos, vencimientos y, en ciertos casos, un cuestionario de incumplimiento. El contador que entiende ese circuito sabe qué esperar, qué plazos corren y cómo armar el descargo.",
+        ],
+      },
+      {
+        heading: "Qué es AIRE y qué notificaciones llegan",
+        body: [
+          "AIRE es el servicio de acuse de recibo e intercambio electrónico de ARCA, el reemplazo natural del tradicional domicilio fiscal electrónico. Por ahí llegan comunicaciones formales: requerimientos de información, notificaciones de deuda, intimaciones de pago y también los cuestionarios por posibles inconsistencias entre la información declarada y la que el organismo cruza con terceros.",
+          "Lo importante para el estudio es que esas notificaciones tienen plazos corretos desde su acuse de recibo. No leer a tiempo un requerimiento no lo anula: el proceso continúa igual y el contribuyente pierde oportunidades de descargo.",
+        ],
+      },
+      {
+        heading: "El cuestionario de incumplimiento, paso a paso",
+        body: [
+          "El proceso suele seguir un orden. Primero, el organismo envía el cuestionario por AIRE con las observaciones puntuales y el plazo para responder. Después, el contribuyente (con su contador) arma el descargo con la documentación que respalda la posición. Luego, ARCA evalúa la respuesta, puede pedir más información y emite una resolución. Si el descargo no convence, la resolución puede convertir la observación en determinación de oficio o en una multa permitida por la normativa.",
+          "Cada etapa rara vez admite saltarse las anteriores. Por eso conviene responder con evidencia documental completa en la primera oportunidad y guardar constancia de la presentación.",
+        ],
+      },
+      {
+        heading: "Qué hacer cuando llega un cuestionario",
+        body: [
+          "Lo primero es no responder desde la urgencia: leer con calma qué observación concreta hace el organismo y con qué período se relaciona. Lo segundo, descartar las causas automatizadas que no aplican al contribuyente (por ejemplo, cruces con información mal cargada) y documentarlo. Lo tercero, responder dentro del plazo que indica la notificación, porque el silencio se interpreta como allanamiento.",
+          "Un asistente que recupera la normativa vigente con cita al texto ayuda a preparar el descargo con base legal, pero la decisión y la firma siguen siendo del profesional.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "ia-generativa-en-contabilidad-casos-de-uso-y-limites",
+    title: "IA generativa en contabilidad: casos de uso reales y sus límites",
+    excerpt:
+      "Qué puede hacer —y qué no— la IA generativa en un estudio contable: responder consultas repetitivas, armar borradores y buscar normativa. Y por qué la verificación humana es innegociable.",
+    datePublished: "2026-08-12",
+    dateModified: "2026-08-12",
+    author: "Equipo AccountantAI",
+    authorPosition: "AccountantAI",
+    readingTime: "5 min",
+    sources: [
+      { label: "ARCA — Agencia de Recaudación y Control Aduanero", url: "https://www.argentina.gob.ar/arca" },
+    ],
+    relatedSlugs: ["que-es-rag-para-contadores", "proceso-normativo-arca-aire-cuestionarios", "asistente-ia-vs-excel-vs-consultora"],
+    sections: [
+      {
+        body: [
+          "La IA generativa le sirve a un estudio contable en tres frentes concretos: responder las consultas repetitivas de los clientes, redactar borradores de respuestas y encontrar la normativa aplicable sobre documentos oficiales. No le sirve para opinar sobre la norma ni para decidir por el contador: la responsabilidad profesional y la firma siguen siendo humanas.",
+        ],
+      },
+      {
+        heading: "Casos de uso que ya funcionan",
+        body: [
+          "El caso más rentable es la consulta repetitiva: preguntas que llegan por WhatsApp sobre vencimientos, categorías de monotributo o facturación. Esas respuestas se pueden preparar en segundos con una herramienta que recupere la normativa vigente y muestre la cita del documento. El contador revisa, ajusta y reenvía.",
+          "Le siguen el borrador de descargos y presentaciones, la preparación de informes para el cliente y la actualización profesional: una herramienta conectada a la normativa de ARCA/AFIP recién publicada evita buscar a mano entre boletines.",
+        ],
+      },
+      {
+        heading: "Dónde están los límites",
+        body: [
+          "El límite número uno es la alucinación: un modelo sin acceso a documentos puede inventar artículos o números con total fluidez. El segundo es el contexto: que una norma exista no significa que aplique al régimen, la provincia o la actividad de un cliente en particular. El tercero son los datos sensibles: el estudio nunca debería exponer información de clientes a herramientas sin política de privacidad verificable.",
+          "La solución práctica es unir la IA a una fuente confiable (la normativa oficial indexada), mostrar la cita de cada afirmación y dejar la decisión final en manos del profesional. Así, la herramienta acelera el trabajo y el estudio conserva el control.",
+        ],
+      },
+      {
+        heading: "El patrón que lo hace auditable",
+        body: [
+          "La fórmula que funciona en la práctica es la de recuperación aumentada (RAG): en lugar de que el modelo responda de memoria, primero se recupera el fragmento de la normativa relevante y después se redacta con la fuente a la vista. Cada respuesta se puede rastrear al texto legal original.",
+          "Con eso, la IA se convierte en un primer borrador con base y no en una caja negra. El contador valida, decide y firma, igual que lo hace con cualquier documento que recibe.",
         ],
       },
     ],

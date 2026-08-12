@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { siteConfig } from "@/lib/config/site";
-import { getAllPosts, getPost } from "@/lib/content/posts";
+import { getAllPosts, getPost, type BlogPost } from "@/lib/content/posts";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -100,6 +100,10 @@ export default async function PostPage({ params }: PageProps) {
     ],
   };
 
+  const relatedPosts = (post.relatedSlugs ?? [])
+    .map((relatedSlug) => getPost(relatedSlug))
+    .filter((related): related is BlogPost => Boolean(related));
+
   return (
     <div className="min-h-dvh bg-background">
       <header className="border-b border-border/60">
@@ -141,6 +145,46 @@ export default async function PostPage({ params }: PageProps) {
             </section>
           ))}
         </div>
+        {post.sources && post.sources.length > 0 && (
+          <section className="mt-12 border-t border-border/60 pt-8">
+            <h2 className="font-heading text-xl font-semibold">Fuentes</h2>
+            <ul className="mt-3 space-y-2">
+              {post.sources.map((source) => (
+                <li key={source.url}>
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline underline-offset-4"
+                  >
+                    {source.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        {relatedPosts.length > 0 && (
+          <section className="mt-12 border-t border-border/60 pt-8">
+            <h2 className="font-heading text-xl font-semibold">
+              Artículos relacionados
+            </h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {relatedPosts.map((related) => (
+                <Link
+                  key={related.slug}
+                  href={`/blog/${related.slug}`}
+                  className="rounded-xl border border-border/60 p-4 transition-colors hover:bg-muted/40"
+                >
+                  <h3 className="font-medium text-foreground">{related.title}</h3>
+                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                    {related.excerpt}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
       <script
         type="application/ld+json"

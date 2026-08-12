@@ -52,7 +52,11 @@ export function Faq() {
           />
         </Reveal>
         <Reveal delay={100}>
-          <Accordion defaultValue={["item-0"]} className="mt-10">
+          <Accordion
+            multiple
+            defaultValue={faqItems.map((_, index) => `item-${index}`)}
+            className="mt-10"
+          >
             {faqItems.map((item, index) => (
               <AccordionItem key={item.question} value={`item-${index}`}>
                 <AccordionTrigger className="text-left font-medium">

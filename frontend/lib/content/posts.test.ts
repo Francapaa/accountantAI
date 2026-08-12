@@ -57,4 +57,22 @@ describe("blog posts", () => {
       }
     }
   });
+
+  it("las tablas tienen headers no vacíos y filas consistentes", () => {
+    for (const post of posts) {
+      for (const section of post.sections) {
+        if (!section.table) {
+          continue;
+        }
+        const { headers, rows } = section.table;
+        expect(headers.length).toBeGreaterThan(0);
+        for (const header of headers) {
+          expect(header.length).toBeGreaterThan(0);
+        }
+        for (const row of rows) {
+          expect(row).toHaveLength(headers.length);
+        }
+      }
+    }
+  });
 });

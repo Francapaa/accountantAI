@@ -1,6 +1,12 @@
+export type BlogTable = {
+  headers: string[];
+  rows: string[][];
+};
+
 export type BlogSection = {
   heading?: string;
   body: string[];
+  table?: BlogTable;
 };
 
 export type BlogSource = {
@@ -148,6 +154,59 @@ export const blogPosts: BlogPost[] = [
         heading: "Asistente de IA con RAG",
         body: [
           "Devuelve en segundos una respuesta citada a la normativa indexada, actualizada automáticamente y con el contexto de cada cliente. La velocidad es su mayor ventaja; la verificación humana sigue siendo necesaria, igual que con el resto de las opciones. Se combina bien con una consultora para los casos límite.",
+        ],
+        table: {
+          headers: [
+            "Criterio",
+            "Búsqueda manual",
+            "Excel propio",
+            "Consultora",
+            "IA con RAG",
+          ],
+          rows: [
+            [
+              "Velocidad de respuesta",
+              "Horas",
+              "Depende de tus notas",
+              "Días",
+              "Segundos",
+            ],
+            [
+              "Costo",
+              "Gratis",
+              "Gratis (mantenimiento manual)",
+              "Por consulta",
+              "Suscripción",
+            ],
+            [
+              "Actualización normativa",
+              "Manual",
+              "Manual",
+              "Depende de la consultora",
+              "Automática",
+            ],
+            [
+              "Control y verificación",
+              "Total",
+              "Total",
+              "Limitado",
+              "Cita a la fuente, validás vos",
+            ],
+            [
+              "Mejor para",
+              "Consultas puntuales",
+              "Conocimiento propio",
+              "Casos complejos",
+              "Consultas diarias x cliente",
+            ],
+          ],
+        },
+      },
+      {
+        heading: "La combinación que funciona",
+        body: [
+          "Ninguna opción es excluyente. El flujo práctico en un estudio es usar el asistente de IA para la consulta repetitiva del día a día, mantener el Excel con el conocimiento propio del estudio y reservar la consultora para los casos límite que exceden la rutina.",
+          "La diferencia de la IA con RAG no es reemplazar al contador: es sacar las horas de las consultas repetitivas para que el profesional las dedique a lo que agrega valor.",
         ],
       },
     ],

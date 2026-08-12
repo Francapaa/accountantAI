@@ -24,7 +24,7 @@ Un asistente de inteligencia artificial para estudios contables de Argentina que
 ### ¿De dónde sale la normativa que utiliza?
 De documentos oficiales de ARCA/AFIP: leyes, resoluciones, manuales e instructivos, que se indexan, vectorizan y actualizan automáticamente.
 
-¿Sirve para monotributistas y responsables inscriptos?
+### ¿Sirve para monotributistas y responsables inscriptos?
 Sí. La IA usa el contexto de cada cliente (régimen, provincia, actividad) para dar respuestas acordes a su situación particular.
 
 ### ¿Se puede verificar las respuestas?
@@ -32,6 +32,87 @@ Sí. Cada respuesta que usa normativa incluye la cita al documento y su fuente p
 
 ### ¿Qué pasa con la privacidad de los clientes?
 Cada contador accede únicamente a sus propios clientes y conversaciones, protegido por autenticación y permisos a nivel de fila.
+
+## Blog
+
+### ¿Qué es RAG y cómo le ahorra horas a un contador con la normativa ARCA/AFIP?
+
+https://accountantai.com/blog/que-es-rag-para-contadores
+
+RAG, o generación aumentada por recuperación, es un patrón de IA que primero busca la respuesta en la normativa oficial de ARCA/AFIP y recién después redacta el texto. Gracias a esto, un estudio contable obtiene una respuesta apoyada en el documento legal exacto y con la fuente visible, en lugar de una frase que el modelo podría inventar.
+
+La normativa de Argentina —leyes, resoluciones generales, manuales e instructivos— suma cientos de páginas al año y cambia con frecuencia. Ningún contador puede tenerla en la cabeza. La alternativa histórica fue buscar a mano entre documentos o derivar la consulta a un tercero. Es lento, y el cliente espera una respuesta en minutos.
+
+El proceso tiene cuatro pasos. Primero, la normativa se descarga y se divide en fragmentos. Segundo, cada fragmento se convierte en un vector —una representación matemática de su significado— y se guarda en una base vectorial. Tercero, cuando hacés una consulta, se convierte en vector y se busca el fragmento más afín. Cuarto, esos fragmentos se pasan al modelo de IA para que redacte la respuesta citando qué documentos usó. Por eso se llama "generación aumentada por recuperación": la IA no memoriza, recupera y redacta. El resultado es auditable, porque cada afirmación se puede rastrear al fragmento original.
+
+Cuando el sistema enlaza el fragmento y la fuente del documento, podés abrirla y verificar el texto legal antes de reenviarle al cliente. La cita cambia la respuesta de una sugerencia imprecisa a algo verificable: sabés cuál es la base legal de cada línea ofrecida. Así, la verificación sigue dependiendo de vos. La IA estructura; el contador valida y decide.
+
+Fuentes: ARCA (https://www.argentina.gob.ar/arca) · AFIP (https://www.argentina.gob.ar/afip).
+
+### Cómo verificar una respuesta con cita a la normativa de ARCA/AFIP en segundos
+
+https://accountantai.com/blog/como-verificar-respuestas-con-citas-normativa
+
+Una respuesta respaldada por IA es confiable solo si podés auditar su base legal en segundos. El flujo de verificación es simple: leer la respuesta, abrir la cita al documento de ARCA/AFIP, confirmar que el fragmento citado respalda la afirmación y decidir. Tres pasos que llevan menos de un minuto.
+
+Paso 1: leé la cita, no solo la respuesta. La respuesta correcta de un buen asistente debería decir qué documento usó. Si una herramienta te da una respuesta sin fuente alguna, tomala como borrador, no como conclusión. La cita es la diferencia entre una opinión y un dato verificable.
+
+Paso 2: abrí la fuente oficial. La normativa de ARCA/AFIP se publica en los canales oficiales del organismo: el sitio del Gobierno de la Argentina y los instructivos del organismo. Abrí el enlace, ubicá el extracto y compará el texto citado con el que te mostró la IA. Deben coincidir.
+
+Paso 3: validá el alcance. Que un texto legal exista no significa que se aplique al caso de tu cliente. Revisá el régimen (monotributo o responsable inscripto), la jurisdicción y la vigencia. Con esos tres pasos convertís una respuesta de IA en una respuesta defendible ante el cliente y ante la autoridad.
+
+Fuentes: ARCA (https://www.argentina.gob.ar/arca).
+
+### Asistente de IA con RAG vs. Excel, búsqueda manual y consultora: qué conviene
+
+https://accountantai.com/blog/asistente-ia-vs-excel-vs-consultora
+
+Resolver una consulta tributaria en Argentina hoy tiene cuatro caminos: un asistente de IA con RAG sobre la normativa oficial, un Excel con tus propias notas, la búsqueda manual en los sitios del organismo o tercerizar la respuesta. Cada uno difiere en velocidad, costo y control.
+
+- Búsqueda manual en la web oficial: es gratis, pero lenta y depende de tu memoria de dónde mirar. En época de cambios normativos, el riesgo es perder una actualización reciente.
+- Excel y notas propias: tu conocimiento es valioso, pero hay que actualizarlo a mano cada cambio y busca en tu cabeza, no en la normativa vigente. Cuando no lo sabés, seguís teniendo el problema original.
+- Consultora externa: resuelve con autoridad, pero con demora y costo por consulta, y no queda en el control del estudio. Es la mejor opción en casos complejos.
+- Asistente de IA con RAG: devuelve en segundos una respuesta citada a la normativa indexada, actualizada automáticamente y con el contexto de cada cliente. La verificación humana sigue siendo necesaria.
+
+| Criterio | Búsqueda manual | Excel propio | Consultora | IA con RAG |
+|---|---|---|---|---|
+| Velocidad de respuesta | Horas | Depende de tus notas | Días | Segundos |
+| Costo | Gratis | Gratis (mantenimiento manual) | Por consulta | Suscripción |
+| Actualización normativa | Manual | Manual | Depende de la consultora | Automática |
+| Control y verificación | Total | Total | Limitado | Cita a la fuente, validás vos |
+| Mejor para | Consultas puntuales | Conocimiento propio | Casos complejos | Consultas diarias x cliente |
+
+Ninguna opción es excluyente. El flujo práctico en un estudio es usar el asistente de IA para la consulta repetitiva del día a día, mantener el Excel con el conocimiento propio del estudio y reservar la consultora para los casos límite. La diferencia de la IA con RAG no es reemplazar al contador: es sacar las horas de las consultas repetitivas para que el profesional las dedique a lo que agrega valor.
+
+Fuentes: ARCA (https://www.argentina.gob.ar/arca).
+
+### AIRE y cuestionarios de incumplimiento: cómo funciona el proceso normativo de ARCA/AFIP
+
+https://accountantai.com/blog/proceso-normativo-arca-aire-cuestionarios
+
+Cuando ARCA (ex AFIP) detecta una inconsistencia vinculada a un contribuyente, suele iniciar el proceso por el servicio AIRE: Acuse de Recibo e Intercambio Electrónico. Es el canal digital oficial por el que el organismo notifica requerimientos, vencimientos y, en ciertos casos, un cuestionario de incumplimiento. El contador que entiende ese circuito sabe qué esperar, qué plazos corren y cómo armar el descargo.
+
+AIRE es el servicio de acuse de recibo e intercambio electrónico de ARCA, el reemplazo natural del tradicional domicilio fiscal electrónico. Por ahí llegan comunicaciones formales: requerimientos de información, notificaciones de deuda, intimaciones de pago y también los cuestionarios por posibles inconsistencias entre la información declarada y la que el organismo cruza con terceros. Lo importante para el estudio es que esas notificaciones tienen plazos correctos desde su acuse de recibo. No leer a tiempo un requerimiento no lo anula: el proceso continúa igual y el contribuyente pierde oportunidades de descargo.
+
+El proceso suele seguir un orden. Primero, el organismo envía el cuestionario por AIRE con las observaciones puntuales y el plazo para responder. Después, el contribuyente (con su contador) arma el descargo con la documentación que respalda la posición. Luego, ARCA evalúa la respuesta, puede pedir más información y emite una resolución. Si el descargo no convence, la resolución puede convertir la observación en determinación de oficio o en una multa permitida por la normativa. Cada etapa rara vez admite saltarse las anteriores. Por eso conviene responder con evidencia documental completa en la primera oportunidad y guardar constancia de la presentación.
+
+Qué hacer cuando llega un cuestionario: lo primero es no responder desde la urgencia, leer con calma qué observación concreta hace el organismo y con qué período se relaciona. Lo segundo, descartar las causas automatizadas que no aplican al contribuyente (por ejemplo, cruces con información mal cargada) y documentarlo. Lo tercero, responder dentro del plazo que indica la notificación, porque el silencio se interpreta como allanamiento. Un asistente que recupera la normativa vigente con cita al texto ayuda a preparar el descargo con base legal, pero la decisión y la firma siguen siendo del profesional.
+
+Fuentes: ARCA (https://www.argentina.gob.ar/arca) · AFIP trámites (https://www.argentina.gob.ar/afip).
+
+### IA generativa en contabilidad: casos de uso reales y sus límites
+
+https://accountantai.com/blog/ia-generativa-en-contabilidad-casos-de-uso-y-limites
+
+La IA generativa le sirve a un estudio contable en tres frentes concretos: responder las consultas repetitivas de los clientes, redactar borradores de respuestas y encontrar la normativa aplicable sobre documentos oficiales. No le sirve para opinar sobre la norma ni para decidir por el contador: la responsabilidad profesional y la firma siguen siendo humanas.
+
+El caso más rentable es la consulta repetitiva: preguntas que llegan por WhatsApp sobre vencimientos, categorías de monotributo o facturación. Esas respuestas se pueden preparar en segundos con una herramienta que recupere la normativa vigente y muestre la cita del documento. Le siguen el borrador de descargos y presentaciones, la preparación de informes para el cliente y la actualización profesional: una herramienta conectada a la normativa de ARCA/AFIP recién publicada evita buscar a mano entre boletines.
+
+Dónde están los límites: la alucinación —un modelo sin acceso a documentos puede inventar artículos o números con total fluidez—; el contexto —que una norma exista no significa que aplique al régimen, la provincia o la actividad de un cliente en particular—; y los datos sensibles —el estudio nunca debería exponer información de clientes a herramientas sin política de privacidad verificable—. La solución práctica es unir la IA a una fuente confiable (la normativa oficial indexada), mostrar la cita de cada afirmación y dejar la decisión final en manos del profesional.
+
+El patrón que lo hace auditable es la recuperación aumentada (RAG): en lugar de que el modelo responda de memoria, primero se recupera el fragmento de la normativa relevante y después se redacta con la fuente a la vista. Cada respuesta se puede rastrear al texto legal original. Con eso, la IA se convierte en un primer borrador con base y no en una caja negra.
+
+Fuentes: ARCA (https://www.argentina.gob.ar/arca).
 
 ## Enlaces útiles
 

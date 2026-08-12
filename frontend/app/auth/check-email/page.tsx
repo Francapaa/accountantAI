@@ -5,6 +5,9 @@ import { buttonVariants } from "@/lib/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { AuthCard } from "../components";
+import { authPageMetadata } from "../metadata";
+
+export const metadata = authPageMetadata.checkEmail;
 
 export default function CheckEmailPage() {
   return (

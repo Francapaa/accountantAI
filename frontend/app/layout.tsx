@@ -80,7 +80,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             crossOrigin="anonymous"
           />
         ) : null}
-        <link rel="apple-touch-icon" href="/icon.svg" />
         <Analytics />
         <WebVitals />
         {children}

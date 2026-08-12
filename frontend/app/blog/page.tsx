@@ -33,6 +33,25 @@ export default function BlogPage() {
     publisher: { "@type": "Organization", name: siteConfig.name, url: siteConfig.url },
   };
 
+  const breadcrumbsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: `${siteConfig.url}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: `${siteConfig.url}/blog`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-dvh bg-background">
       <header className="border-b border-border/60">
@@ -74,6 +93,12 @@ export default function BlogPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbsJsonLd).replace(/</g, "\\u003c"),
         }}
       />
     </div>
